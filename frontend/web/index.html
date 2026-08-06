@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+
+  <!-- Lets the browser/PWA chrome know the real background & status-bar tint,
+       so the status bar (clock/battery/wifi) area blends with the app
+       instead of the OS drawing its own default bar over our content. -->
+  <meta name="theme-color" content="#14140F">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="EBN">
+
+  <title>EBN — Verify Any Asset</title>
+
+  <!-- Gebeta Maps' web SDK (MapLibre GL JS under the hood). The
+       gebeta_gl Flutter plugin doesn't have a working web implementation
+       wired up, so the broker map talks to this JS SDK directly instead
+       — see frontend/lib/services/gebeta_web_map.dart. -->
+  <link rel="stylesheet" href="https://tiles.gebeta.app/static/gebeta-maps-lib.css" />
+  <script type="module" src="https://tiles.gebeta.app/static/gebeta-maps.umd.js"></script>
+
+  <style>
+    /* Fill the true device viewport (not just the visible browser chrome
+       area) and paint the safe-area strip behind the status bar with the
+       app's own background so nothing looks cut off or mismatched before
+       Flutter takes over. */
+    html, body {
+      height: 100%;
+      margin: 0;
+      background: #F7F6F1;
+    }
+  </style>
+</head>
+<body>
+  <script src="flutter_bootstrap.js" async></script>
+</body>
+</html>
+

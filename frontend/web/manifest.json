@@ -1,0 +1,9 @@
+{
+    "name": "EBN Demo",
+    "short_name": "EBN",
+    "start_url": ".",
+    "display": "standalone",
+    "background_color": "#F7F6F1",
+    "theme_color": "#14140F",
+    "description": "EBN — Customer / Admin / Agent interactive client demo"
+}
