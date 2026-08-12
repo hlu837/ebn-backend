@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
+import '../models/investment_commitment.dart';
 import '../models/investor_network.dart';
 import '../models/investor_wallet.dart';
 
@@ -13,6 +14,22 @@ class InvestorWalletException implements Exception {
 
   @override
   String toString() => message;
+}
+
+/// Result of a successful reinvestment — the new Pending commitment it
+/// created, plus the wallet transaction that debited the balance for it.
+class ReinvestResult {
+  final InvestmentCommitment commitment;
+  final InvestorWalletTransaction transaction;
+
+  const ReinvestResult({required this.commitment, required this.transaction});
+
+  factory ReinvestResult.fromJson(Map<String, dynamic> json) {
+    return ReinvestResult(
+      commitment: InvestmentCommitment.fromJson(json['commitment'] as Map<String, dynamic>),
+      transaction: InvestorWalletTransaction.fromJson(json['transaction'] as Map<String, dynamic>),
+    );
+  }
 }
 
 /// Talks to `/api/investors/:investorId/wallet`. Every endpoint requires
@@ -74,6 +91,24 @@ class InvestorWalletService {
   }) async {
     final res = await _post('/api/investors/$investorId/wallet/transactions/$txId/clear', token: token);
     return InvestorWalletTransaction.fromJson(jsonDecode(res) as Map<String, dynamic>);
+  }
+
+  /// Rolls part of this investor's wallet balance into a new investment
+  /// opportunity instead of withdrawing it. Creates a normal Pending
+  /// commitment on the backend — same admin approve/reject queue as any
+  /// other commitment — and debits the wallet balance immediately.
+  Future<ReinvestResult> reinvest({
+    required String token,
+    required String investorId,
+    required String opportunityId,
+    required double amount,
+  }) async {
+    final res = await _post(
+      '/api/investors/$investorId/wallet/reinvest',
+      token: token,
+      body: {'opportunityId': opportunityId, 'amount': amount},
+    );
+    return ReinvestResult.fromJson(jsonDecode(res) as Map<String, dynamic>);
   }
 
   // ── Network (investor-to-investor referral program) ───────────────────

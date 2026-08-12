@@ -123,13 +123,15 @@ class _AgentHomeScreenState extends State<AgentHomeScreen> {
     // while browsing Leads shows up on their own Saved Listings page too.
     context.read<FavoritesController>().attachUser(widget.user);
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) context.read<OrderRequestController>().fetchForAgent(widget.user.id);
+      if (mounted)
+        context.read<OrderRequestController>().fetchForAgent(widget.user.id);
     });
     _loadAssets();
     _loadMyProperties();
     _loadWallet();
     _refreshUnreadNotifications();
-    _notificationsPollTimer = Timer.periodic(const Duration(seconds: 15), (_) => _refreshUnreadNotifications());
+    _notificationsPollTimer = Timer.periodic(
+        const Duration(seconds: 15), (_) => _refreshUnreadNotifications());
   }
 
   Future<void> _refreshUnreadNotifications() async {
@@ -139,7 +141,8 @@ class _AgentHomeScreenState extends State<AgentHomeScreen> {
       final notifications = await _notificationService.getNotifications(token);
       if (!mounted) return;
       final unread = notifications.where((n) => !n.isRead).length;
-      if (unread != _unreadNotificationsCount) setState(() => _unreadNotificationsCount = unread);
+      if (unread != _unreadNotificationsCount)
+        setState(() => _unreadNotificationsCount = unread);
     } on NotificationException {
       // Transient hiccup — next poll tick retries.
     }
@@ -179,7 +182,8 @@ class _AgentHomeScreenState extends State<AgentHomeScreen> {
 
   Future<void> _loadWallet() async {
     try {
-      final wallet = await _agentService.getWallet(widget.user.id, token: widget.user.token ?? '');
+      final wallet = await _agentService.getWallet(widget.user.id,
+          token: widget.user.token ?? '');
       if (!mounted) return;
       setState(() => _walletBalance = wallet.balance);
     } on AgentServiceException catch (_) {
@@ -187,7 +191,8 @@ class _AgentHomeScreenState extends State<AgentHomeScreen> {
     }
   }
 
-  bool get _hasLocation => _currentUser.agentLatitude != null && _currentUser.agentLongitude != null;
+  bool get _hasLocation =>
+      _currentUser.agentLatitude != null && _currentUser.agentLongitude != null;
 
   bool _togglingOnline = false;
 
@@ -207,7 +212,8 @@ class _AgentHomeScreenState extends State<AgentHomeScreen> {
     setState(() => _togglingOnline = true);
     try {
       final token = _currentUser.token;
-      if (token == null) throw 'Your session is missing a token — please sign in again.';
+      if (token == null)
+        throw 'Your session is missing a token — please sign in again.';
       final updated = await AuthService().clearAgentLocation(token: token);
       if (!mounted) return;
       setState(() => _currentUser = updated);
@@ -235,14 +241,17 @@ class _AgentHomeScreenState extends State<AgentHomeScreen> {
       if (permission == LocationPermission.denied) {
         permission = await Geolocator.requestPermission();
       }
-      if (permission == LocationPermission.denied || permission == LocationPermission.deniedForever) {
+      if (permission == LocationPermission.denied ||
+          permission == LocationPermission.deniedForever) {
         throw 'Location access was denied.';
       }
       final position = await Geolocator.getCurrentPosition(
-        locationSettings: const LocationSettings(accuracy: LocationAccuracy.high),
+        locationSettings:
+            const LocationSettings(accuracy: LocationAccuracy.high),
       );
       final token = _currentUser.token;
-      if (token == null) throw 'Your session is missing a token — please sign in again.';
+      if (token == null)
+        throw 'Your session is missing a token — please sign in again.';
       final updated = await AuthService().updateAgentLocation(
         token: token,
         latitude: position.latitude,
@@ -268,7 +277,8 @@ class _AgentHomeScreenState extends State<AgentHomeScreen> {
             agentPhone: widget.user.phone ?? '',
           );
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Claimed — reach out to the visitor directly.')));
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Claimed — reach out to the visitor directly.')));
     } on OrderRequestException catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('$e')));
@@ -280,7 +290,8 @@ class _AgentHomeScreenState extends State<AgentHomeScreen> {
   List<Asset> get _visibleAssets {
     final query = _searchController.text.trim().toLowerCase();
     var list = _assets.where((asset) {
-      final matchesCategory = _categoryFilter == null || asset.category == _categoryFilter;
+      final matchesCategory =
+          _categoryFilter == null || asset.category == _categoryFilter;
       final matchesQuery = query.isEmpty ||
           (asset.city?.toLowerCase().contains(query) ?? false) ||
           (asset.addressLine?.toLowerCase().contains(query) ?? false) ||
@@ -304,14 +315,17 @@ class _AgentHomeScreenState extends State<AgentHomeScreen> {
   }
 
   Future<void> _openFilters(BuildContext context) async {
-    _minPriceController.text = _minPrice == null ? '' : _minPrice!.toStringAsFixed(0);
-    _maxPriceController.text = _maxPrice == null ? '' : _maxPrice!.toStringAsFixed(0);
+    _minPriceController.text =
+        _minPrice == null ? '' : _minPrice!.toStringAsFixed(0);
+    _maxPriceController.text =
+        _maxPrice == null ? '' : _maxPrice!.toStringAsFixed(0);
 
     await showModalBottomSheet<void>(
       context: context,
       backgroundColor: AppColors.cloud,
       isScrollControlled: true,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
       builder: (sheetContext) {
         return Padding(
           padding: EdgeInsets.only(
@@ -327,19 +341,30 @@ class _AgentHomeScreenState extends State<AgentHomeScreen> {
               Row(
                 children: [
                   const Expanded(
-                    child: Text('Filters', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: AppColors.ink)),
+                    child: Text('Filters',
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w700,
+                            color: AppColors.ink)),
                   ),
                   TextButton(
                     onPressed: () {
                       _minPriceController.clear();
                       _maxPriceController.clear();
                     },
-                    child: const Text('Reset', style: TextStyle(color: AppColors.slate, fontWeight: FontWeight.w600)),
+                    child: const Text('Reset',
+                        style: TextStyle(
+                            color: AppColors.slate,
+                            fontWeight: FontWeight.w600)),
                   ),
                 ],
               ),
               const SizedBox(height: 12),
-              const Text('Price range', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: AppColors.ink)),
+              const Text('Price range',
+                  style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.ink)),
               const SizedBox(height: 10),
               Row(
                 children: [
@@ -351,8 +376,12 @@ class _AgentHomeScreenState extends State<AgentHomeScreen> {
                         hintText: 'Min',
                         filled: true,
                         fillColor: AppColors.card,
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: AppColors.border)),
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 14, vertical: 12),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide:
+                                const BorderSide(color: AppColors.border)),
                       ),
                     ),
                   ),
@@ -367,8 +396,12 @@ class _AgentHomeScreenState extends State<AgentHomeScreen> {
                         hintText: 'Max',
                         filled: true,
                         fillColor: AppColors.card,
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: AppColors.border)),
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 14, vertical: 12),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide:
+                                const BorderSide(color: AppColors.border)),
                       ),
                     ),
                   ),
@@ -378,8 +411,10 @@ class _AgentHomeScreenState extends State<AgentHomeScreen> {
               ElevatedButton(
                 onPressed: () {
                   setState(() {
-                    _minPrice = double.tryParse(_minPriceController.text.trim());
-                    _maxPrice = double.tryParse(_maxPriceController.text.trim());
+                    _minPrice =
+                        double.tryParse(_minPriceController.text.trim());
+                    _maxPrice =
+                        double.tryParse(_maxPriceController.text.trim());
                   });
                   Navigator.of(sheetContext).pop();
                 },
@@ -387,9 +422,11 @@ class _AgentHomeScreenState extends State<AgentHomeScreen> {
                   backgroundColor: AppColors.primaryYellow,
                   foregroundColor: Colors.white,
                   minimumSize: const Size.fromHeight(48),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(999)),
                 ),
-                child: const Text('Apply filters', style: TextStyle(fontWeight: FontWeight.w700)),
+                child: const Text('Apply filters',
+                    style: TextStyle(fontWeight: FontWeight.w700)),
               ),
             ],
           ),
@@ -434,7 +471,8 @@ class _AgentHomeScreenState extends State<AgentHomeScreen> {
   Widget build(BuildContext context) {
     final loop = context.watch<LoopController>();
     final orderRequests = context.watch<OrderRequestController>();
-    final availableOrderRequests = orderRequests.availableForAgent(widget.user.id);
+    final availableOrderRequests =
+        orderRequests.availableForAgent(widget.user.id);
     final assignedOrderRequests = orderRequests.assignedToAgent(widget.user.id);
 
     return Scaffold(
@@ -445,7 +483,10 @@ class _AgentHomeScreenState extends State<AgentHomeScreen> {
             children: [
               LoopProgress(stage: loop.stage),
               if (loop.broadcastingRequests.isNotEmpty)
-                _BroadcastingToursBanner(loop: loop, agentId: widget.user.id, agentName: widget.user.fullName),
+                _BroadcastingToursBanner(
+                    loop: loop,
+                    agentId: widget.user.id,
+                    agentName: widget.user.fullName),
               Expanded(
                 child: IndexedStack(
                   index: _tabIndex,
@@ -464,44 +505,90 @@ class _AgentHomeScreenState extends State<AgentHomeScreen> {
                       availableLeadsCount: availableOrderRequests.length,
                       onSwitchToLeadsTab: () => setState(() => _tabIndex = 2),
                       unreadNotifications: _unreadNotificationsCount,
-                      onNotificationsTap: () => Navigator.of(context).push(MaterialPageRoute(
-                          builder: (_) => NotificationsScreen(
-                                token: widget.user.token ?? '',
-                                onUnreadCountChanged: (count) {
-                                  if (mounted) setState(() => _unreadNotificationsCount = count);
-                                },
-                              ))),
+                      onNotificationsTap: () =>
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (_) => NotificationsScreen(
+                                    token: widget.user.token ?? '',
+                                    onUnreadCountChanged: (count) {
+                                      if (mounted)
+                                        setState(() =>
+                                            _unreadNotificationsCount = count);
+                                    },
+                                  ))),
                     ),
                     ChatInboxScreen(
                       user: _currentUser,
                       showBackButton: false,
                       onUnreadChanged: (count) {
-                        if (mounted && count != _unreadChatCount) setState(() => _unreadChatCount = count);
+                        if (mounted && count != _unreadChatCount)
+                          setState(() => _unreadChatCount = count);
                       },
                     ),
-                    _buildLeadsTab(availableOrderRequests, assignedOrderRequests),
+                    _buildLeadsTab(
+                        availableOrderRequests, assignedOrderRequests),
                     AgentMenuScreen(
                       user: _currentUser,
                       tier: AgentTier.gold,
                       isOnline: _hasLocation,
                       onOnlineChanged: _setOnline,
-                      onPropertyManagement: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => AgentSellRequestsScreen(user: widget.user))),
-                      onCustomers: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => AgentCustomersScreen(user: widget.user))),
-                      onReferrals: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => AgentReferralsScreen(user: widget.user))),
-                      onBrokerNetwork: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => AgentBrokerNetworkScreen(user: widget.user))),
-                      onNetwork: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => AgentNetworkScreen(user: widget.user))),
-                      onVisibilityProfile: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => AgentVisibilityProfileScreen(user: widget.user, tier: AgentTier.gold))),
-                      onSavedListings: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => FavoritesScreen(user: widget.user))),
-                      onWallet: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => AgentWalletScreen(user: widget.user))),
-                      onMembership: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => AgentMembershipScreen(user: widget.user, initialTier: AgentTier.gold))),
+                      onPropertyManagement: () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                              builder: (_) =>
+                                  AgentSellRequestsScreen(user: widget.user))),
+                      onCustomers: () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                              builder: (_) =>
+                                  AgentCustomersScreen(user: widget.user))),
+                      onReferrals: () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                              builder: (_) =>
+                                  AgentReferralsScreen(user: widget.user))),
+                      onBrokerNetwork: () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                              builder: (_) =>
+                                  AgentBrokerNetworkScreen(user: widget.user))),
+                      onNetwork: () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                              builder: (_) =>
+                                  AgentNetworkScreen(user: widget.user))),
+                      onVisibilityProfile: () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                              builder: (_) => AgentVisibilityProfileScreen(
+                                  user: widget.user, tier: AgentTier.gold))),
+                      onSavedListings: () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                              builder: (_) =>
+                                  FavoritesScreen(user: widget.user))),
+                      onWallet: () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                              builder: (_) =>
+                                  AgentWalletScreen(user: widget.user))),
+                      onMembership: () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                              builder: (_) => AgentMembershipScreen(
+                                  user: widget.user,
+                                  initialTier: AgentTier.gold))),
                       onCommunication: () => setState(() => _tabIndex = 1),
-                      onSchedule: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => AgentScheduleScreen(user: widget.user))),
-                      onTourHistory: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => MyTourRequestsScreen(user: widget.user, forAgent: true))),
-                      onSettings: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => AgentSettingsScreen(user: widget.user))),
-                      onSupport: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => AgentSupportScreen(user: widget.user, onStartLiveChat: () {
-                        Navigator.of(context).pop();
-                        setState(() => _tabIndex = 1);
-                      }))),
+                      onSchedule: () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                              builder: (_) =>
+                                  AgentScheduleScreen(user: widget.user))),
+                      onTourHistory: () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                              builder: (_) => MyTourRequestsScreen(
+                                  user: widget.user, forAgent: true))),
+                      onSettings: () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                              builder: (_) =>
+                                  AgentSettingsScreen(user: widget.user))),
+                      onSupport: () =>
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (_) => AgentSupportScreen(
+                                  user: widget.user,
+                                  onStartLiveChat: () {
+                                    Navigator.of(context).pop();
+                                    setState(() => _tabIndex = 1);
+                                  }))),
                       onResetDemo: loop.reset,
                       onLogout: () => _logout(loop),
                     ),
@@ -510,7 +597,8 @@ class _AgentHomeScreenState extends State<AgentHomeScreen> {
               ),
             ],
           ),
-          if (loop.isRinging) _RingingOverlay(loop: loop, agentId: widget.user.id),
+          if (loop.isRinging)
+            _RingingOverlay(loop: loop, agentId: widget.user.id),
         ],
       ),
       bottomNavigationBar: AgentBottomNav(
@@ -525,7 +613,8 @@ class _AgentHomeScreenState extends State<AgentHomeScreen> {
   /// The old full-screen browsing feed (search + category filters + sort +
   /// nearby Order Us requests + company inventory grid), now living under
   /// the "Leads" tab instead of behind the drawer's "Dashboard" link.
-  Widget _buildLeadsTab(List<OrderRequest> availableOrderRequests, List<OrderRequest> assignedOrderRequests) {
+  Widget _buildLeadsTab(List<OrderRequest> availableOrderRequests,
+      List<OrderRequest> assignedOrderRequests) {
     final assets = _visibleAssets;
     return SafeArea(
       bottom: false,
@@ -533,13 +622,19 @@ class _AgentHomeScreenState extends State<AgentHomeScreen> {
         slivers: [
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(AppSpacing.lg, AppSpacing.md, AppSpacing.lg, 0),
+              padding: const EdgeInsets.fromLTRB(
+                  AppSpacing.lg, AppSpacing.md, AppSpacing.lg, 0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('Leads', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800, color: AppColors.ink)),
+                  const Text('Leads',
+                      style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w800,
+                          color: AppColors.ink)),
                   const SizedBox(height: 2),
-                  const Text('Nearby requests plus your company\'s inventory', style: TextStyle(fontSize: 12.5, color: AppColors.slate)),
+                  const Text('Nearby requests plus your company\'s inventory',
+                      style: TextStyle(fontSize: 12.5, color: AppColors.slate)),
                   const SizedBox(height: AppSpacing.md),
                   _SearchRow(
                     controller: _searchController,
@@ -553,18 +648,29 @@ class _AgentHomeScreenState extends State<AgentHomeScreen> {
                     onSelected: (v) => setState(() => _categoryFilter = v),
                   ),
                   const SizedBox(height: AppSpacing.md),
-                  _ResultsSortRow(count: assets.length, sort: _sort, onSortChanged: (v) => setState(() => _sort = v)),
+                  _ResultsSortRow(
+                      count: assets.length,
+                      sort: _sort,
+                      onSortChanged: (v) => setState(() => _sort = v)),
                   const SizedBox(height: AppSpacing.sm),
                   if (_assetsError != null)
                     Container(
                       width: double.infinity,
                       padding: const EdgeInsets.all(AppSpacing.md),
                       margin: const EdgeInsets.only(bottom: AppSpacing.sm),
-                      decoration: BoxDecoration(color: AppColors.card, borderRadius: BorderRadius.circular(AppRadii.md), border: Border.all(color: AppColors.border)),
+                      decoration: BoxDecoration(
+                          color: AppColors.card,
+                          borderRadius: BorderRadius.circular(AppRadii.md),
+                          border: Border.all(color: AppColors.border)),
                       child: Row(
                         children: [
-                          Expanded(child: Text(_assetsError!, style: const TextStyle(fontSize: 12.5, color: AppColors.slate))),
-                          TextButton(onPressed: _loadAssets, child: const Text('Retry')),
+                          Expanded(
+                              child: Text(_assetsError!,
+                                  style: const TextStyle(
+                                      fontSize: 12.5, color: AppColors.slate))),
+                          TextButton(
+                              onPressed: _loadAssets,
+                              child: const Text('Retry')),
                         ],
                       ),
                     ),
@@ -581,7 +687,8 @@ class _AgentHomeScreenState extends State<AgentHomeScreen> {
             ),
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(AppSpacing.lg, 0, AppSpacing.lg, AppSpacing.md),
+              padding: const EdgeInsets.fromLTRB(
+                  AppSpacing.lg, 0, AppSpacing.lg, AppSpacing.md),
               child: _OrderRequestsSection(
                 hasLocation: _hasLocation,
                 settingLocation: _settingLocation,
@@ -594,7 +701,8 @@ class _AgentHomeScreenState extends State<AgentHomeScreen> {
             ),
           ),
           SliverPadding(
-            padding: const EdgeInsets.fromLTRB(AppSpacing.lg, 0, AppSpacing.lg, AppSpacing.xl),
+            padding: const EdgeInsets.fromLTRB(
+                AppSpacing.lg, 0, AppSpacing.lg, AppSpacing.xl),
             sliver: SliverGrid(
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
@@ -610,7 +718,8 @@ class _AgentHomeScreenState extends State<AgentHomeScreen> {
                     asset: asset,
                     compact: true,
                     isSaved: favorites.isFavorite(asset.id),
-                    onSaveToggle: (_) => context.read<FavoritesController>().toggle(asset.id),
+                    onSaveToggle: (_) =>
+                        context.read<FavoritesController>().toggle(asset.id),
                     actionLabel: 'View',
                     onActionPressed: () {},
                   );
@@ -660,7 +769,11 @@ class _OrderRequestsSection extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('Set your location', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w800, color: AppColors.ink)),
+            const Text('Set your location',
+                style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w800,
+                    color: AppColors.ink)),
             const SizedBox(height: 4),
             const Text(
               "Order requests from visitors nearby only reach you once you've set your location.",
@@ -668,14 +781,18 @@ class _OrderRequestsSection extends StatelessWidget {
             ),
             const SizedBox(height: AppSpacing.sm),
             SecondaryButton(
-              label: settingLocation ? 'Getting your location…' : 'Use my current location',
+              label: settingLocation
+                  ? 'Getting your location…'
+                  : 'Use my current location',
               borderColor: AppColors.primaryYellow,
               textColor: AppColors.primaryYellowDark,
               onPressed: settingLocation ? null : onSetLocation,
             ),
             if (locationError != null) ...[
               const SizedBox(height: 6),
-              Text(locationError!, style: const TextStyle(fontSize: 12, color: AppColors.danger)),
+              Text(locationError!,
+                  style:
+                      const TextStyle(fontSize: 12, color: AppColors.danger)),
             ],
           ],
         ),
@@ -688,16 +805,25 @@ class _OrderRequestsSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (available.isNotEmpty) ...[
-          Text('Order requests near you (${available.length})', style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w800, color: AppColors.ink)),
+          Text('Order requests near you (${available.length})',
+              style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w800,
+                  color: AppColors.ink)),
           const SizedBox(height: AppSpacing.sm),
           for (final r in available) ...[
-            _OrderRequestCard(request: r, primaryLabel: 'Claim', onPrimary: () => onClaim(r)),
+            _OrderRequestCard(
+                request: r, primaryLabel: 'Claim', onPrimary: () => onClaim(r)),
             const SizedBox(height: AppSpacing.sm),
           ],
         ],
         if (assigned.isNotEmpty) ...[
           const SizedBox(height: AppSpacing.sm),
-          Text('Your claimed requests (${assigned.length})', style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w800, color: AppColors.ink)),
+          Text('Your claimed requests (${assigned.length})',
+              style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w800,
+                  color: AppColors.ink)),
           const SizedBox(height: AppSpacing.sm),
           for (final r in assigned) ...[
             _OrderRequestCard(request: r),
@@ -710,7 +836,8 @@ class _OrderRequestsSection extends StatelessWidget {
 }
 
 class _OrderRequestCard extends StatelessWidget {
-  const _OrderRequestCard({required this.request, this.primaryLabel, this.onPrimary});
+  const _OrderRequestCard(
+      {required this.request, this.primaryLabel, this.onPrimary});
 
   final OrderRequest request;
   final String? primaryLabel;
@@ -730,32 +857,54 @@ class _OrderRequestCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              Expanded(child: Text(request.title, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w800, color: AppColors.ink))),
+              Expanded(
+                  child: Text(request.title,
+                      style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w800,
+                          color: AppColors.ink))),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                decoration: BoxDecoration(color: AppColors.slate.withOpacity(0.12), borderRadius: BorderRadius.circular(AppRadii.pill)),
-                child: Text(request.status.agentLabel, style: const TextStyle(fontSize: 10.5, fontWeight: FontWeight.w800, color: AppColors.slate)),
+                decoration: BoxDecoration(
+                    color: AppColors.slate.withOpacity(0.12),
+                    borderRadius: BorderRadius.circular(AppRadii.pill)),
+                child: Text(request.status.agentLabel,
+                    style: const TextStyle(
+                        fontSize: 10.5,
+                        fontWeight: FontWeight.w800,
+                        color: AppColors.slate)),
               ),
             ],
           ),
           const SizedBox(height: 2),
-          Text('${request.budgetSummary} · ${request.locationSummary}', style: const TextStyle(fontSize: 12, color: AppColors.slate)),
+          Text('${request.budgetSummary} · ${request.locationSummary}',
+              style: const TextStyle(fontSize: 12, color: AppColors.slate)),
           const SizedBox(height: 6),
           Text(
             request.description,
             maxLines: 3,
             overflow: TextOverflow.ellipsis,
-            style: const TextStyle(fontSize: 12, color: AppColors.slate, height: 1.4),
+            style: const TextStyle(
+                fontSize: 12, color: AppColors.slate, height: 1.4),
           ),
           if (primaryLabel != null && onPrimary != null) ...[
             const SizedBox(height: AppSpacing.sm),
             SizedBox(
               width: double.infinity,
-              child: PrimaryButton(label: primaryLabel!, backgroundColor: AppColors.primaryYellow, foregroundColor: Colors.white, onPressed: onPrimary),
+              child: PrimaryButton(
+                  label: primaryLabel!,
+                  backgroundColor: AppColors.primaryYellow,
+                  foregroundColor: Colors.white,
+                  onPressed: onPrimary),
             ),
           ] else ...[
             const SizedBox(height: 4),
-            Text('Requester: ${request.requesterName} · ${request.requesterPhone}', style: const TextStyle(fontSize: 11.5, color: AppColors.slate, fontWeight: FontWeight.w600)),
+            Text(
+                'Requester: ${request.requesterName} · ${request.requesterPhone}',
+                style: const TextStyle(
+                    fontSize: 11.5,
+                    color: AppColors.slate,
+                    fontWeight: FontWeight.w600)),
           ],
         ],
       ),
@@ -768,14 +917,16 @@ class _OrderRequestCard extends StatelessWidget {
 /// through (declined or timed out), now broadcasting for any nearby agent
 /// to claim, first-come-first-served (`POST /:id/claim`).
 class _BroadcastingToursBanner extends StatefulWidget {
-  const _BroadcastingToursBanner({required this.loop, required this.agentId, required this.agentName});
+  const _BroadcastingToursBanner(
+      {required this.loop, required this.agentId, required this.agentName});
 
   final LoopController loop;
   final String agentId;
   final String agentName;
 
   @override
-  State<_BroadcastingToursBanner> createState() => _BroadcastingToursBannerState();
+  State<_BroadcastingToursBanner> createState() =>
+      _BroadcastingToursBannerState();
 }
 
 class _BroadcastingToursBannerState extends State<_BroadcastingToursBanner> {
@@ -791,7 +942,8 @@ class _BroadcastingToursBannerState extends State<_BroadcastingToursBanner> {
     if (!mounted) return;
     setState(() => _claimingId = null);
     if (!ok && widget.loop.lastError != null) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(widget.loop.lastError!)));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(widget.loop.lastError!)));
     }
   }
 
@@ -800,13 +952,17 @@ class _BroadcastingToursBannerState extends State<_BroadcastingToursBanner> {
     final rows = widget.loop.broadcastingRequests;
     return Container(
       color: AppColors.primaryYellow.withOpacity(0.12),
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: AppSpacing.sm),
+      padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.lg, vertical: AppSpacing.sm),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             '${rows.length} nearby tour${rows.length == 1 ? '' : 's'} up for grabs',
-            style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 12.5, color: AppColors.ink),
+            style: const TextStyle(
+                fontWeight: FontWeight.w800,
+                fontSize: 12.5,
+                color: AppColors.ink),
           ),
           const SizedBox(height: 6),
           ...rows.map((row) {
@@ -819,7 +975,8 @@ class _BroadcastingToursBannerState extends State<_BroadcastingToursBanner> {
                   Expanded(
                     child: Text(
                       row['asset_title'] as String? ?? 'Tour request',
-                      style: const TextStyle(fontSize: 12.5, fontWeight: FontWeight.w600),
+                      style: const TextStyle(
+                          fontSize: 12.5, fontWeight: FontWeight.w600),
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
@@ -864,31 +1021,47 @@ class _RingingOverlay extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
                 decoration: BoxDecoration(
                   color: AppColors.primaryYellow.withOpacity(0.15),
                   borderRadius: BorderRadius.circular(AppRadii.pill),
-                  border: Border.all(color: AppColors.primaryYellow.withOpacity(0.4)),
+                  border: Border.all(
+                      color: AppColors.primaryYellow.withOpacity(0.4)),
                 ),
                 child: const Text(
                   'NEW DISPATCH',
-                  style: TextStyle(color: AppColors.primaryYellow, fontWeight: FontWeight.w800, fontSize: 12, letterSpacing: 1),
+                  style: TextStyle(
+                      color: AppColors.primaryYellow,
+                      fontWeight: FontWeight.w800,
+                      fontSize: 12,
+                      letterSpacing: 1),
                 ),
               ),
               const SizedBox(height: AppSpacing.lg),
-              _CountdownRing(seconds: loop.secondsLeft, total: LoopController.dispatchWindowSeconds),
+              _CountdownRing(
+                  seconds: loop.secondsLeft,
+                  total: LoopController.dispatchWindowSeconds,
+                  size: 140),
               const SizedBox(height: AppSpacing.lg),
               Text(
                 asset?.title ?? 'New tour request',
                 textAlign: TextAlign.center,
-                style: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w800),
+                style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w800),
               ),
               const SizedBox(height: 6),
               if (asset != null)
                 Text(
-                  [if (asset.addressLine != null) asset.addressLine!, if (asset.city != null) asset.city!].join(' · '),
+                  [
+                    if (asset.addressLine != null) asset.addressLine!,
+                    if (asset.city != null) asset.city!
+                  ].join(' · '),
                   textAlign: TextAlign.center,
-                  style: const TextStyle(color: Color(0xFFB9B8AE), fontSize: 13.5),
+                  style:
+                      const TextStyle(color: Color(0xFFB9B8AE), fontSize: 13.5),
                 ),
               const SizedBox(height: AppSpacing.xxl),
               Row(
@@ -921,7 +1094,8 @@ class _RingingOverlay extends StatelessWidget {
 }
 
 class _CountdownRing extends StatelessWidget {
-  const _CountdownRing({required this.seconds, required this.total, this.size = 100});
+  const _CountdownRing(
+      {required this.seconds, required this.total, required this.size});
   final int seconds;
   final int total;
   final double size;
@@ -946,8 +1120,11 @@ class _CountdownRing extends StatelessWidget {
           ),
         ),
         Column(mainAxisSize: MainAxisSize.min, children: [
-          Text('$seconds', style: TextStyle(color: color, fontSize: 28, fontWeight: FontWeight.w900)),
-          const Text('sec', style: TextStyle(color: Colors.white54, fontSize: 11)),
+          Text('$seconds',
+              style: TextStyle(
+                  color: color, fontSize: 28, fontWeight: FontWeight.w900)),
+          const Text('sec',
+              style: TextStyle(color: Colors.white54, fontSize: 11)),
         ]),
       ]),
     );
@@ -955,7 +1132,11 @@ class _CountdownRing extends StatelessWidget {
 }
 
 class _SearchRow extends StatelessWidget {
-  const _SearchRow({required this.controller, required this.onChanged, this.onFilterTap, this.hasActiveFilters = false});
+  const _SearchRow(
+      {required this.controller,
+      required this.onChanged,
+      this.onFilterTap,
+      this.hasActiveFilters = false});
   final TextEditingController controller;
   final ValueChanged<String> onChanged;
   final VoidCallback? onFilterTap;
@@ -973,18 +1154,25 @@ class _SearchRow extends StatelessWidget {
             decoration: InputDecoration(
               isDense: true,
               hintText: 'Search city or address',
-              prefixIcon: const Icon(Icons.search_rounded, color: AppColors.slate),
+              prefixIcon:
+                  const Icon(Icons.search_rounded, color: AppColors.slate),
               contentPadding: const EdgeInsets.symmetric(vertical: 14),
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(AppRadii.pill), borderSide: const BorderSide(color: AppColors.border)),
+              border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(AppRadii.pill),
+                  borderSide: const BorderSide(color: AppColors.border)),
             ),
           ),
         ),
         const SizedBox(width: 10),
         Material(
-          color: hasActiveFilters ? AppColors.primaryYellow : Colors.transparent,
+          color:
+              hasActiveFilters ? AppColors.primaryYellow : Colors.transparent,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(999),
-            side: BorderSide(color: hasActiveFilters ? AppColors.primaryYellow : AppColors.border),
+            side: BorderSide(
+                color: hasActiveFilters
+                    ? AppColors.primaryYellow
+                    : AppColors.border),
           ),
           child: InkWell(
             customBorder: const CircleBorder(),
@@ -1012,10 +1200,16 @@ class _CategoryFilterRow extends StatelessWidget {
       child: ListView(
         scrollDirection: Axis.horizontal,
         children: [
-          _FilterChip(label: 'All', isSelected: selected == null, onTap: () => onSelected(null)),
+          _FilterChip(
+              label: 'All',
+              isSelected: selected == null,
+              onTap: () => onSelected(null)),
           const SizedBox(width: 8),
           for (final category in AssetCategorySlug.values) ...[
-            _FilterChip(label: category.label, isSelected: selected == category, onTap: () => onSelected(category)),
+            _FilterChip(
+                label: category.label,
+                isSelected: selected == category,
+                onTap: () => onSelected(category)),
             const SizedBox(width: 8),
           ],
         ],
@@ -1025,7 +1219,8 @@ class _CategoryFilterRow extends StatelessWidget {
 }
 
 class _FilterChip extends StatelessWidget {
-  const _FilterChip({required this.label, required this.isSelected, required this.onTap});
+  const _FilterChip(
+      {required this.label, required this.isSelected, required this.onTap});
   final String label;
   final bool isSelected;
   final VoidCallback onTap;
@@ -1040,9 +1235,16 @@ class _FilterChip extends StatelessWidget {
         onTap: onTap,
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular(AppRadii.pill), border: Border.all(color: isSelected ? AppColors.ink : AppColors.border)),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(AppRadii.pill),
+              border: Border.all(
+                  color: isSelected ? AppColors.ink : AppColors.border)),
           alignment: Alignment.center,
-          child: Text(label, style: TextStyle(fontSize: 13.5, fontWeight: FontWeight.w700, color: isSelected ? AppColors.primaryYellow : AppColors.ink)),
+          child: Text(label,
+              style: TextStyle(
+                  fontSize: 13.5,
+                  fontWeight: FontWeight.w700,
+                  color: isSelected ? AppColors.primaryYellow : AppColors.ink)),
         ),
       ),
     );
@@ -1050,7 +1252,8 @@ class _FilterChip extends StatelessWidget {
 }
 
 class _ResultsSortRow extends StatelessWidget {
-  const _ResultsSortRow({required this.count, required this.sort, required this.onSortChanged});
+  const _ResultsSortRow(
+      {required this.count, required this.sort, required this.onSortChanged});
   final int count;
   final _SortOption sort;
   final ValueChanged<_SortOption> onSortChanged;
@@ -1059,19 +1262,31 @@ class _ResultsSortRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Text('$count result${count == 1 ? '' : 's'}', style: const TextStyle(fontSize: 13.5, fontWeight: FontWeight.w700, color: AppColors.slate)),
+        Text('$count result${count == 1 ? '' : 's'}',
+            style: const TextStyle(
+                fontSize: 13.5,
+                fontWeight: FontWeight.w700,
+                color: AppColors.slate)),
         const Spacer(),
         PopupMenuButton<_SortOption>(
           initialValue: sort,
           onSelected: onSortChanged,
           color: AppColors.card,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadii.md)),
-          itemBuilder: (context) => _SortOption.values.map((o) => PopupMenuItem(value: o, child: Text(o.label))).toList(),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(AppRadii.md)),
+          itemBuilder: (context) => _SortOption.values
+              .map((o) => PopupMenuItem(value: o, child: Text(o.label)))
+              .toList(),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(sort.label, style: const TextStyle(fontSize: 13.5, fontWeight: FontWeight.w700, color: AppColors.ink)),
-              const Icon(Icons.expand_more_rounded, size: 18, color: AppColors.ink),
+              Text(sort.label,
+                  style: const TextStyle(
+                      fontSize: 13.5,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.ink)),
+              const Icon(Icons.expand_more_rounded,
+                  size: 18, color: AppColors.ink),
             ],
           ),
         ),

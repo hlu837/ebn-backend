@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/asset.dart';
 import '../models/auth_response.dart';
-import '../models/user_role.dart';
 import '../providers/favorites_controller.dart';
 import '../providers/loop_controller.dart';
 import '../services/asset_service.dart';

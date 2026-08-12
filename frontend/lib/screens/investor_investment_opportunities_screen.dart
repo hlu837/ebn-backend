@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../models/auth_response.dart';
-import '../models/investment_commitment.dart';
 import '../models/investment_opportunity.dart';
 import '../services/investment_commitment_service.dart';
 import '../services/investment_opportunity_service.dart';

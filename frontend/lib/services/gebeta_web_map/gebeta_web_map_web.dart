@@ -2,30 +2,11 @@
 // web/index.html via:
 //   <link rel="stylesheet" href="https://tiles.gebeta.app/static/gebeta-maps-lib.css" />
 //   <script type="module" src="https://tiles.gebeta.app/static/gebeta-maps.umd.js"></script>
-//
-// That SDK is built on MapLibre GL JS (same engine gebeta_gl wraps
-// natively on Android/iOS), so the underlying `map` object exposes the
-// familiar MapLibre API: `.on(event, cb)`, `.project(lngLat)`,
-// `.fitBounds(bounds, options)`, `.resize()`, `.remove()`. See:
-// https://gebeta.app/blog/google-to-gebeta-migration
-//
-// We deliberately do NOT use the SDK's own marker API. Instead we read
-// pixel positions back out via `map.project()` and let Flutter draw the
-// existing `BrokerMapPin` widgets on top of the HtmlElementView. That
-// keeps broker-pin styling, selection state, and tap handling exactly as
-// they were, all in Dart, with the JS side doing nothing but rendering
-// tiles and reporting camera moves.
-//
-// dart:html and dart:js_util are both fully functional today (only
-// soft-deprecated in favor of package:web/dart:js_interop) and are the
-// most broadly-compatible way to write this without a local toolchain to
-// verify against — swap to dart:js_interop later if you want the newer
-// typed interop style.
 
 import 'dart:async';
 import 'dart:html' as html;
-import 'dart:js' as js;
-import 'dart:js_util' as js_util;
+import 'dart:js_interop';
+import 'dart:js_interop_unsafe';
 import 'dart:ui_web' as ui_web;
 
 class GebetaWebMap {
@@ -37,7 +18,7 @@ class GebetaWebMap {
   final html.DivElement _container;
 
   /// The underlying JS `Map` instance returned by `GebetaMaps#init()`.
-  Object? _mapJs;
+  JSObject? _mapJs;
   Timer? _readyPoll;
   bool _disposed = false;
 
@@ -81,7 +62,7 @@ class GebetaWebMap {
     await _waitUntilConnected();
     if (_disposed) return;
 
-    final gebetaMapsCtor = js_util.getProperty(html.window, 'GebetaMaps');
+    final gebetaMapsCtor = globalContext.getProperty('GebetaMaps'.toJS);
     if (gebetaMapsCtor == null) {
       throw StateError(
         'window.GebetaMaps is undefined — check that web/index.html loads '
@@ -89,32 +70,35 @@ class GebetaWebMap {
       );
     }
 
-    final gebetaMaps = js_util.callConstructor(gebetaMapsCtor, [
-      js_util.jsify({'apiKey': apiKey}),
-    ]);
+    final gebetaMaps = (gebetaMapsCtor as JSFunction).callAsConstructor(
+      {'apiKey': apiKey}.jsify(),
+    ) as JSObject;
 
-    final map = js_util.callMethod(gebetaMaps, 'init', [
-      js_util.jsify({
+    final map = gebetaMaps.callMethod(
+      'init'.toJS,
+      {
         'container': _container.id,
         'center': [centerLng, centerLat],
         'zoom': zoom,
         'style': styleUrl,
-      }),
-    ]);
+      }.jsify(),
+    ) as JSObject;
     _mapJs = map;
 
-    js_util.callMethod(map, 'on', [
-      'load',
-      js.allowInterop(() {
+    map.callMethod(
+      'on'.toJS,
+      'load'.toJS,
+      (() {
         if (!_disposed) _styleLoadedController.add(null);
-      }),
-    ]);
-    js_util.callMethod(map, 'on', [
-      'move',
-      js.allowInterop(() {
+      }).toJS,
+    );
+    map.callMethod(
+      'on'.toJS,
+      'move'.toJS,
+      (() {
         if (!_disposed) _moveController.add(null);
-      }),
-    ]);
+      }).toJS,
+    );
 
     // The container's true layout size is only settled once Flutter has
     // positioned the HtmlElementView; nudge MapLibre to re-measure so
@@ -142,7 +126,7 @@ class GebetaWebMap {
   void resize() {
     final map = _mapJs;
     if (map == null) return;
-    js_util.callMethod(map, 'resize', []);
+    map.callMethod('resize'.toJS);
   }
 
   /// Projects a lat/lng to a pixel offset within the map container,
@@ -151,11 +135,12 @@ class GebetaWebMap {
   ({double x, double y})? project(double lng, double lat) {
     final map = _mapJs;
     if (map == null) return null;
-    final point = js_util.callMethod(map, 'project', [
-      js_util.jsify([lng, lat]),
-    ]);
-    final x = (js_util.getProperty(point, 'x') as num).toDouble();
-    final y = (js_util.getProperty(point, 'y') as num).toDouble();
+    final point = map.callMethod(
+      'project'.toJS,
+      [lng, lat].jsify(),
+    ) as JSObject;
+    final x = (point.getProperty('x'.toJS) as JSNumber).toDartDouble;
+    final y = (point.getProperty('y'.toJS) as JSNumber).toDartDouble;
     return (x: x, y: y);
   }
 
@@ -173,16 +158,17 @@ class GebetaWebMap {
   }) {
     final map = _mapJs;
     if (map == null) return;
-    js_util.callMethod(map, 'fitBounds', [
-      js_util.jsify([
+    map.callMethod(
+      'fitBounds'.toJS,
+      [
         [west, south],
         [east, north],
-      ]),
-      js_util.jsify({
+      ].jsify(),
+      {
         'padding': {'left': left, 'top': top, 'right': right, 'bottom': bottom},
         'duration': 600,
-      }),
-    ]);
+      }.jsify(),
+    );
   }
 
   void dispose() {
@@ -192,7 +178,7 @@ class GebetaWebMap {
     _moveController.close();
     final map = _mapJs;
     if (map != null) {
-      js_util.callMethod(map, 'remove', []);
+      map.callMethod('remove'.toJS);
     }
     _mapJs = null;
   }

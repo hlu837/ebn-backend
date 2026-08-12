@@ -57,12 +57,14 @@ final _propertiesSectionKey = GlobalKey<_PropertiesSectionState>();
 void _scrollToSection(GlobalKey key) {
   final ctx = key.currentContext;
   if (ctx != null) {
-    Scrollable.ensureVisible(ctx, duration: const Duration(milliseconds: 400), curve: Curves.easeInOut);
+    Scrollable.ensureVisible(ctx,
+        duration: const Duration(milliseconds: 400), curve: Curves.easeInOut);
   }
 }
 
 void _scrollToProperties({AssetCategorySlug? category, String? query}) {
-  _propertiesSectionKey.currentState?.applyExternalFilter(category: category, query: query);
+  _propertiesSectionKey.currentState
+      ?.applyExternalFilter(category: category, query: query);
   _scrollToSection(_propertiesSectionKey);
 }
 
@@ -129,7 +131,8 @@ List<_SearchResult> _buildSearchIndex(
         title: sub,
         subtitle: 'Subcategory under ${s.title}',
         icon: s.icon,
-        onSelect: () => _scrollToProperties(category: assetCategory, query: sub),
+        onSelect: () =>
+            _scrollToProperties(category: assetCategory, query: sub),
       ));
     }
   }
@@ -139,7 +142,8 @@ List<_SearchResult> _buildSearchIndex(
       title: asset.title,
       subtitle: '${asset.formattedPrice} \u00b7 ${asset.city ?? ''}',
       icon: Icons.location_on_outlined,
-      onSelect: () => _scrollToProperties(category: asset.category, query: asset.title),
+      onSelect: () =>
+          _scrollToProperties(category: asset.category, query: asset.title),
     ));
   }
   for (final step in kSteps) {
@@ -204,12 +208,14 @@ List<_SearchResult> _buildSearchIndex(
 
 class _LandingSearchDelegate extends SearchDelegate<void> {
   final List<_SearchResult> results;
-  _LandingSearchDelegate(this.results) : super(searchFieldLabel: 'Search EBN\u2026');
+  _LandingSearchDelegate(this.results)
+      : super(searchFieldLabel: 'Search EBN\u2026');
 
   @override
   List<Widget> buildActions(BuildContext context) {
     return [
-      if (query.isNotEmpty) IconButton(icon: const Icon(Icons.clear), onPressed: () => query = ''),
+      if (query.isNotEmpty)
+        IconButton(icon: const Icon(Icons.clear), onPressed: () => query = ''),
     ];
   }
 
@@ -241,7 +247,8 @@ class _LandingSearchDelegate extends SearchDelegate<void> {
       return const Center(
         child: Padding(
           padding: EdgeInsets.all(32),
-          child: Text('No matches found.', style: TextStyle(color: LandingColors.muted)),
+          child: Text('No matches found.',
+              style: TextStyle(color: LandingColors.muted)),
         ),
       );
     }
@@ -250,14 +257,23 @@ class _LandingSearchDelegate extends SearchDelegate<void> {
       color: LandingColors.background,
       child: ListView.separated(
         itemCount: filtered.length,
-        separatorBuilder: (_, __) => const Divider(height: 1, color: LandingColors.border),
+        separatorBuilder: (_, __) =>
+            const Divider(height: 1, color: LandingColors.border),
         itemBuilder: (context, i) {
           final r = filtered[i];
           return ListTile(
             leading: Icon(r.icon, color: LandingColors.gold),
-            title: Text(r.title, style: const TextStyle(color: LandingColors.foreground, fontWeight: FontWeight.w600)),
-            subtitle: Text(r.subtitle, maxLines: 2, overflow: TextOverflow.ellipsis, style: const TextStyle(color: LandingColors.muted)),
-            trailing: Text(r.category, style: const TextStyle(fontSize: 11, color: LandingColors.muted)),
+            title: Text(r.title,
+                style: const TextStyle(
+                    color: LandingColors.foreground,
+                    fontWeight: FontWeight.w600)),
+            subtitle: Text(r.subtitle,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(color: LandingColors.muted)),
+            trailing: Text(r.category,
+                style:
+                    const TextStyle(fontSize: 11, color: LandingColors.muted)),
             onTap: () {
               close(context, null);
               r.onSelect();
@@ -277,39 +293,48 @@ class RoleGateScreen extends StatelessWidget {
   const RoleGateScreen({super.key});
 
   void _goToRoleSelect(BuildContext context) {
-    Navigator.of(context).push(MaterialPageRoute(builder: (_) => const RoleSelectScreen()));
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (_) => const RoleSelectScreen()));
   }
 
   void _goToLogin(BuildContext context) {
-    Navigator.of(context).push(MaterialPageRoute(builder: (_) => const LoginScreen()));
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (_) => const LoginScreen()));
   }
 
   void _goToAdmin(BuildContext context) {
-    Navigator.of(context).push(MaterialPageRoute(builder: (_) => const SignInScreen()));
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (_) => const SignInScreen()));
   }
 
   void _goToAboutUs(BuildContext context) {
-    Navigator.of(context).push(MaterialPageRoute(builder: (_) => const AboutUsScreen()));
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (_) => const AboutUsScreen()));
   }
 
   void _goToContactUs(BuildContext context) {
-    Navigator.of(context).push(MaterialPageRoute(builder: (_) => const ContactUsScreen()));
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (_) => const ContactUsScreen()));
   }
 
   void _goToFaq(BuildContext context) {
-    Navigator.of(context).push(MaterialPageRoute(builder: (_) => const FaqScreen()));
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (_) => const FaqScreen()));
   }
 
   void _goToHowItWorks(BuildContext context) {
-    Navigator.of(context).push(MaterialPageRoute(builder: (_) => const HowItWorksScreen()));
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (_) => const HowItWorksScreen()));
   }
 
   void _goToMembership(BuildContext context) {
-    Navigator.of(context).push(MaterialPageRoute(builder: (_) => const MembershipScreen()));
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (_) => const MembershipScreen()));
   }
 
   void _goToPlatform(BuildContext context) {
-    Navigator.of(context).push(MaterialPageRoute(builder: (_) => const PlatformFeaturesScreen()));
+    Navigator.of(context).push(
+        MaterialPageRoute(builder: (_) => const PlatformFeaturesScreen()));
   }
 
   void _openSearch(BuildContext context) {
@@ -328,7 +353,9 @@ class RoleGateScreen extends StatelessWidget {
 
   void _onLanguageSelected(BuildContext context, String language) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('$language selected. Full translation is coming soon.')),
+      SnackBar(
+          content:
+              Text('$language selected. Full translation is coming soon.')),
     );
   }
 
@@ -365,7 +392,8 @@ class _Hero extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        _SearchHeroPanel(onOrderUs: onRequest, onGetAgent: () => _goToBrokers(context)),
+        _SearchHeroPanel(
+            onOrderUs: onRequest, onGetAgent: () => _goToBrokers(context)),
         _QuickActionCards(onGetVerified: onRequest, onSell: onRequest),
         _FullCategoryGrid(
           onPostAd: onRequest,
@@ -380,7 +408,8 @@ class _Hero extends StatelessWidget {
 /// category grid -- same routing `_HeroCategoryGrid` used to do (Broker List
 /// opens the broker directory; everything else opens its listing page, with
 /// House absorbing the dropped Apartments/Condominium/Building tiles).
-void _openServiceFromHero(BuildContext context, int serviceIndex, VoidCallback onGetStarted) {
+void _openServiceFromHero(
+    BuildContext context, int serviceIndex, VoidCallback onGetStarted) {
   final s = kServices[serviceIndex];
   if (serviceIndex == _brokerListServiceIndex) {
     Navigator.of(context).push(MaterialPageRoute(
@@ -399,7 +428,11 @@ void _openServiceFromHero(BuildContext context, int serviceIndex, VoidCallback o
       categoryIcon: s.icon,
       onGetStarted: onGetStarted,
       extraCategories: serviceIndex == 2
-          ? const [AssetCategorySlug.apartments, AssetCategorySlug.condominium, AssetCategorySlug.building]
+          ? const [
+              AssetCategorySlug.apartments,
+              AssetCategorySlug.condominium,
+              AssetCategorySlug.building
+            ]
           : const [],
     ),
   ));
@@ -440,7 +473,9 @@ class _SearchHeroPanel extends StatelessWidget {
             Text(
               'Order a verified inspection or get matched with an agent.',
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 12.5, color: LandingColors.background.withOpacity(0.72)),
+              style: TextStyle(
+                  fontSize: 12.5,
+                  color: LandingColors.background.withOpacity(0.72)),
             ),
             const SizedBox(height: 20),
             Row(
@@ -479,7 +514,11 @@ class _HeroCtaButton extends StatelessWidget {
   final IconData icon;
   final bool filled;
   final VoidCallback onTap;
-  const _HeroCtaButton({required this.label, required this.icon, required this.filled, required this.onTap});
+  const _HeroCtaButton(
+      {required this.label,
+      required this.icon,
+      required this.filled,
+      required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -493,12 +532,16 @@ class _HeroCtaButton extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 12),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(999),
-            border: filled ? null : Border.all(color: LandingColors.gold, width: 1.4),
+            border: filled
+                ? null
+                : Border.all(color: LandingColors.gold, width: 1.4),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(icon, size: 17, color: filled ? LandingColors.goldFg : LandingColors.gold),
+              Icon(icon,
+                  size: 17,
+                  color: filled ? LandingColors.goldFg : LandingColors.gold),
               const SizedBox(width: 8),
               Flexible(
                 child: Text(
@@ -598,11 +641,17 @@ class _ActionTile extends StatelessWidget {
             children: [
               Icon(icon, color: iconColor, size: 26),
               const SizedBox(height: 10),
-              Text(label, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w800, color: LandingColors.foreground)),
+              Text(label,
+                  style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w800,
+                      color: LandingColors.foreground)),
               const SizedBox(height: 2),
               Text(subtitle,
-                  maxLines: 2, overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(fontSize: 11, color: LandingColors.muted)),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                      fontSize: 11, color: LandingColors.muted)),
             ],
           ),
         ),
@@ -629,7 +678,10 @@ class _FullCategoryGrid extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text('Category',
-              style: TextStyle(fontSize: 15, fontWeight: FontWeight.w800, color: LandingColors.foreground)),
+              style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w800,
+                  color: LandingColors.foreground)),
           const SizedBox(height: 12),
           GridView.count(
             crossAxisCount: 4,
@@ -686,12 +738,17 @@ class _GridCategoryTile extends StatelessWidget {
             height: 54,
             width: 54,
             decoration: BoxDecoration(
-              color: highlighted ? LandingColors.gold : LandingColors.gold.withOpacity(0.12),
+              color: highlighted
+                  ? LandingColors.gold
+                  : LandingColors.gold.withOpacity(0.12),
               borderRadius: BorderRadius.circular(16),
             ),
             alignment: Alignment.center,
             child: (imageUrl == null || highlighted)
-                ? Icon(icon, size: 25, color: highlighted ? LandingColors.goldFg : LandingColors.gold)
+                ? Icon(icon,
+                    size: 25,
+                    color:
+                        highlighted ? LandingColors.goldFg : LandingColors.gold)
                 : Padding(
                     padding: const EdgeInsets.all(9),
                     child: ClipRRect(
@@ -699,7 +756,8 @@ class _GridCategoryTile extends StatelessWidget {
                       child: Image.network(
                         imageUrl!,
                         fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) => Icon(icon, size: 25, color: LandingColors.gold),
+                        errorBuilder: (_, __, ___) =>
+                            Icon(icon, size: 25, color: LandingColors.gold),
                       ),
                     ),
                   ),
@@ -710,7 +768,10 @@ class _GridCategoryTile extends StatelessWidget {
             textAlign: TextAlign.center,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
-            style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: LandingColors.foreground),
+            style: const TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.w700,
+                color: LandingColors.foreground),
           ),
         ],
       ),
@@ -727,7 +788,7 @@ class _GridCategoryTile extends StatelessWidget {
 // -----------------------------------------------------------------------------
 class _PropertiesSection extends StatefulWidget {
   final VoidCallback onGetStarted;
-  const _PropertiesSection({super.key, required this.onGetStarted});
+  const _PropertiesSection({required this.onGetStarted});
 
   @override
   State<_PropertiesSection> createState() => _PropertiesSectionState();
@@ -768,7 +829,9 @@ class _PropertiesSectionState extends State<_PropertiesSection> {
     setState(() {
       _categoryFilter = category;
       if (query != null) {
-        _searchController.value = TextEditingValue(text: query, selection: TextSelection.collapsed(offset: query.length));
+        _searchController.value = TextEditingValue(
+            text: query,
+            selection: TextSelection.collapsed(offset: query.length));
       }
     });
   }
@@ -776,7 +839,8 @@ class _PropertiesSectionState extends State<_PropertiesSection> {
   List<Asset> get _visibleAssets {
     final query = _searchController.text.trim().toLowerCase();
     return _cachedLandingAssets.where((asset) {
-      if (_categoryFilter != null && asset.category != _categoryFilter) return false;
+      if (_categoryFilter != null && asset.category != _categoryFilter)
+        return false;
       if (query.isEmpty) return true;
       final haystack = [
         asset.title,
@@ -819,23 +883,34 @@ class _PropertiesSectionState extends State<_PropertiesSection> {
                 spacing: 8,
                 runSpacing: 8,
                 children: activeService.subcategories.map((sub) {
-                  final selected = _searchController.text.trim().toLowerCase() == sub.toLowerCase();
+                  final selected =
+                      _searchController.text.trim().toLowerCase() ==
+                          sub.toLowerCase();
                   return _SubcategoryChip(
                     label: sub,
                     selected: selected,
-                    onTap: () => setState(() => selected ? _searchController.clear() : _searchController.text = sub),
+                    onTap: () => setState(() => selected
+                        ? _searchController.clear()
+                        : _searchController.text = sub),
                   );
                 }).toList(),
               ),
               const SizedBox(height: 16),
             ],
             Text(
-              activeService != null ? '${activeService.title} listings' : 'Trending ads',
-              style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w800, color: LandingColors.foreground),
+              activeService != null
+                  ? '${activeService.title} listings'
+                  : 'Trending ads',
+              style: const TextStyle(
+                  fontSize: 17,
+                  fontWeight: FontWeight.w800,
+                  color: LandingColors.foreground),
             ),
             const SizedBox(height: 2),
-            Text('${assets.length} listing${assets.length == 1 ? '' : 's'} available',
-                style: const TextStyle(fontSize: 12.5, color: LandingColors.muted)),
+            Text(
+                '${assets.length} listing${assets.length == 1 ? '' : 's'} available',
+                style: const TextStyle(
+                    fontSize: 12.5, color: LandingColors.muted)),
             const SizedBox(height: 16),
             if (displayedAssets.isEmpty)
               Container(
@@ -846,7 +921,8 @@ class _PropertiesSectionState extends State<_PropertiesSection> {
                 ),
                 padding: const EdgeInsets.symmetric(vertical: 48),
                 alignment: Alignment.center,
-                child: const Text('No listings match your search yet.', style: TextStyle(color: LandingColors.muted)),
+                child: const Text('No listings match your search yet.',
+                    style: TextStyle(color: LandingColors.muted)),
               )
             else
               Padding(
@@ -879,7 +955,12 @@ class _CategoryTile extends StatelessWidget {
   final String? imageUrl;
   final bool selected;
   final VoidCallback onTap;
-  const _CategoryTile({required this.label, required this.icon, this.imageUrl, required this.selected, required this.onTap});
+  const _CategoryTile(
+      {required this.label,
+      required this.icon,
+      this.imageUrl,
+      required this.selected,
+      required this.onTap});
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -896,14 +977,22 @@ class _CategoryTile extends StatelessWidget {
                 height: 56,
                 width: 56,
                 decoration: BoxDecoration(
-                  color: selected ? LandingColors.gold : LandingColors.gold.withOpacity(0.12),
+                  color: selected
+                      ? LandingColors.gold
+                      : LandingColors.gold.withOpacity(0.12),
                   borderRadius: BorderRadius.circular(16),
-                  border: selected ? Border.all(color: LandingColors.gold, width: 2) : null,
+                  border: selected
+                      ? Border.all(color: LandingColors.gold, width: 2)
+                      : null,
                 ),
                 alignment: Alignment.center,
                 clipBehavior: Clip.antiAlias,
                 child: imageUrl == null
-                    ? Icon(icon, size: 26, color: selected ? LandingColors.goldFg : LandingColors.gold)
+                    ? Icon(icon,
+                        size: 26,
+                        color: selected
+                            ? LandingColors.goldFg
+                            : LandingColors.gold)
                     : Padding(
                         padding: const EdgeInsets.all(9),
                         child: ClipRRect(
@@ -913,10 +1002,17 @@ class _CategoryTile extends StatelessWidget {
                             fit: BoxFit.cover,
                             loadingBuilder: (context, child, progress) {
                               if (progress == null) return child;
-                              return Icon(icon, size: 26, color: selected ? LandingColors.goldFg : LandingColors.gold);
+                              return Icon(icon,
+                                  size: 26,
+                                  color: selected
+                                      ? LandingColors.goldFg
+                                      : LandingColors.gold);
                             },
-                            errorBuilder: (context, error, stack) =>
-                                Icon(icon, size: 26, color: selected ? LandingColors.goldFg : LandingColors.gold),
+                            errorBuilder: (context, error, stack) => Icon(icon,
+                                size: 26,
+                                color: selected
+                                    ? LandingColors.goldFg
+                                    : LandingColors.gold),
                           ),
                         ),
                       ),
@@ -945,7 +1041,8 @@ class _SubcategoryChip extends StatelessWidget {
   final String label;
   final bool selected;
   final VoidCallback onTap;
-  const _SubcategoryChip({required this.label, required this.selected, required this.onTap});
+  const _SubcategoryChip(
+      {required this.label, required this.selected, required this.onTap});
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -956,9 +1053,16 @@ class _SubcategoryChip extends StatelessWidget {
         onTap: onTap,
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular(999), border: Border.all(color: selected ? LandingColors.gold : LandingColors.border)),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(999),
+              border: Border.all(
+                  color: selected ? LandingColors.gold : LandingColors.border)),
           child: Text(label,
-              style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w600, color: selected ? LandingColors.goldFg : LandingColors.muted)),
+              style: TextStyle(
+                  fontSize: 11.5,
+                  fontWeight: FontWeight.w600,
+                  color:
+                      selected ? LandingColors.goldFg : LandingColors.muted)),
         ),
       ),
     );
@@ -974,18 +1078,33 @@ class _BrowseCta extends StatelessWidget {
     final text = const Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Ready to verify with confidence?', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600, color: LandingColors.foreground)),
+        Text('Ready to verify with confidence?',
+            style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.w600,
+                color: LandingColors.foreground)),
         SizedBox(height: 6),
-        Text('Sign up to request an on-site inspection on any listing above.', style: TextStyle(fontSize: 14, color: LandingColors.muted)),
+        Text('Sign up to request an on-site inspection on any listing above.',
+            style: TextStyle(fontSize: 14, color: LandingColors.muted)),
       ],
     );
-    final btn = GoldButton(label: 'Get Started / Sign Up', trailing: Icons.arrow_forward, fontSize: 14, onTap: onGetStarted);
+    final btn = GoldButton(
+        label: 'Get Started / Sign Up',
+        trailing: Icons.arrow_forward,
+        fontSize: 14,
+        onTap: onGetStarted);
     return Container(
       padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(color: LandingColors.card, border: Border.all(color: LandingColors.border), borderRadius: BorderRadius.circular(16)),
+      decoration: BoxDecoration(
+          color: LandingColors.card,
+          border: Border.all(color: LandingColors.border),
+          borderRadius: BorderRadius.circular(16)),
       child: wide
-          ? Row(children: [Expanded(child: text), const SizedBox(width: 24), btn])
-          : Column(crossAxisAlignment: CrossAxisAlignment.start, children: [text, const SizedBox(height: 16), btn]),
+          ? Row(
+              children: [Expanded(child: text), const SizedBox(width: 24), btn])
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [text, const SizedBox(height: 16), btn]),
     );
   }
 }
@@ -1000,15 +1119,22 @@ class _Footer extends StatelessWidget {
   Widget build(BuildContext context) {
     final wide = LandingBreakpoints.isDesktop(context);
     final year = DateTime.now().year;
-    final left = Text('\u00a9 $year EBN. Addis Ababa, Ethiopia.', style: const TextStyle(fontSize: 13, color: Colors.white70));
+    final left = Text('\u00a9 $year EBN. Addis Ababa, Ethiopia.',
+        style: const TextStyle(fontSize: 13, color: Colors.white70));
     final right = Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        const Text('Verify any asset. On-site. On demand.', style: TextStyle(fontSize: 12, color: Colors.white70, fontFamily: 'monospace')),
+        const Text('Verify any asset. On-site. On demand.',
+            style: TextStyle(
+                fontSize: 12, color: Colors.white70, fontFamily: 'monospace')),
         const SizedBox(width: 16),
         GestureDetector(
           onTap: onAdminTap,
-          child: const Text('Admin', style: TextStyle(fontSize: 12, color: Colors.white70, decoration: TextDecoration.underline)),
+          child: const Text('Admin',
+              style: TextStyle(
+                  fontSize: 12,
+                  color: Colors.white70,
+                  decoration: TextDecoration.underline)),
         ),
       ],
     );
@@ -1018,8 +1144,12 @@ class _Footer extends StatelessWidget {
       child: MaxWidth(
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
         child: wide
-            ? Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [left, right])
-            : Column(crossAxisAlignment: CrossAxisAlignment.start, children: [left, const SizedBox(height: 8), right]),
+            ? Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [left, right])
+            : Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [left, const SizedBox(height: 8), right]),
       ),
     );
   }
@@ -1057,16 +1187,41 @@ class _Nav extends StatelessWidget {
     showModalBottomSheet(
       context: context,
       backgroundColor: LandingColors.background,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
       builder: (sheetContext) => _MobileMenuSheet(
-        onHowItWorks: () { Navigator.pop(sheetContext); onHowItWorks(); },
-        onMembership: () { Navigator.pop(sheetContext); onMembership(); },
-        onPlatform: () { Navigator.pop(sheetContext); onPlatform(); },
-        onAboutUs: () { Navigator.pop(sheetContext); onAboutUs(); },
-        onContactUs: () { Navigator.pop(sheetContext); onContactUs(); },
-        onFaq: () { Navigator.pop(sheetContext); onFaq(); },
-        onGetStarted: () { Navigator.pop(sheetContext); onGetStarted(); },
-        onLogIn: () { Navigator.pop(sheetContext); onLogIn(); },
+        onHowItWorks: () {
+          Navigator.pop(sheetContext);
+          onHowItWorks();
+        },
+        onMembership: () {
+          Navigator.pop(sheetContext);
+          onMembership();
+        },
+        onPlatform: () {
+          Navigator.pop(sheetContext);
+          onPlatform();
+        },
+        onAboutUs: () {
+          Navigator.pop(sheetContext);
+          onAboutUs();
+        },
+        onContactUs: () {
+          Navigator.pop(sheetContext);
+          onContactUs();
+        },
+        onFaq: () {
+          Navigator.pop(sheetContext);
+          onFaq();
+        },
+        onGetStarted: () {
+          Navigator.pop(sheetContext);
+          onGetStarted();
+        },
+        onLogIn: () {
+          Navigator.pop(sheetContext);
+          onLogIn();
+        },
       ),
     );
   }
@@ -1090,10 +1245,15 @@ class _Nav extends StatelessWidget {
               splashRadius: 20,
             ),
             const SizedBox(width: 8),
-            const Text('EBN', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: Colors.white)),
+            const Text('EBN',
+                style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white)),
             const Spacer(),
             if (showLinks) ...[
-              _NavLink('Browse', onTap: () => _scrollToSection(_propertiesSectionKey)),
+              _NavLink('Browse',
+                  onTap: () => _scrollToSection(_propertiesSectionKey)),
               const SizedBox(width: 24),
               _NavLink('How it works', onTap: onHowItWorks),
               const SizedBox(width: 24),
@@ -1163,10 +1323,15 @@ PopupMenuItem<String> _languageMenuItem(String value) {
             color: LandingColors.gold.withOpacity(0.15),
             borderRadius: BorderRadius.circular(8),
           ),
-          child: const Icon(Icons.language, size: 14, color: LandingColors.gold),
+          child:
+              const Icon(Icons.language, size: 14, color: LandingColors.gold),
         ),
         const SizedBox(width: 12),
-        Text(value, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: LandingColors.foreground)),
+        Text(value,
+            style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: LandingColors.foreground)),
       ],
     ),
   );
@@ -1178,7 +1343,8 @@ class _NavLink extends StatelessWidget {
   const _NavLink(this.label, {this.onTap});
   @override
   Widget build(BuildContext context) {
-    final text = Text(label, style: const TextStyle(color: Colors.white70, fontSize: 14));
+    final text = Text(label,
+        style: const TextStyle(color: Colors.white70, fontSize: 14));
     if (onTap == null) return text;
     return InkWell(onTap: onTap, child: text);
   }
@@ -1220,8 +1386,10 @@ class _MobileMenuSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     final items = [
       _MobileMenuItem(Icons.route_outlined, 'How it works', onHowItWorks),
-      _MobileMenuItem(Icons.workspace_premium_outlined, 'Membership', onMembership),
-      _MobileMenuItem(Icons.dashboard_customize_outlined, 'Platform', onPlatform),
+      _MobileMenuItem(
+          Icons.workspace_premium_outlined, 'Membership', onMembership),
+      _MobileMenuItem(
+          Icons.dashboard_customize_outlined, 'Platform', onPlatform),
       _MobileMenuItem(Icons.info_outline, 'About Us', onAboutUs),
       _MobileMenuItem(Icons.mail_outline, 'Contact Us', onContactUs),
       _MobileMenuItem(Icons.help_outline, 'FAQ', onFaq),
@@ -1238,13 +1406,19 @@ class _MobileMenuSheet extends StatelessWidget {
                 height: 4,
                 width: 40,
                 margin: const EdgeInsets.only(bottom: 16),
-                decoration: BoxDecoration(color: LandingColors.border, borderRadius: BorderRadius.circular(999)),
+                decoration: BoxDecoration(
+                    color: LandingColors.border,
+                    borderRadius: BorderRadius.circular(999)),
               ),
             ),
             for (final item in items)
               ListTile(
                 leading: Icon(item.icon, color: LandingColors.gold),
-                title: Text(item.label, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: LandingColors.foreground)),
+                title: Text(item.label,
+                    style: const TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w600,
+                        color: LandingColors.foreground)),
                 onTap: item.onTap,
               ),
             const Padding(
@@ -1253,12 +1427,20 @@ class _MobileMenuSheet extends StatelessWidget {
             ),
             ListTile(
               leading: const Icon(Icons.login, color: LandingColors.gold),
-              title: const Text('Log In', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: LandingColors.foreground)),
+              title: const Text('Log In',
+                  style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                      color: LandingColors.foreground)),
               onTap: onLogIn,
             ),
             ListTile(
               leading: const Icon(Icons.north_east, color: LandingColors.gold),
-              title: const Text('Get started', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: LandingColors.foreground)),
+              title: const Text('Get started',
+                  style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                      color: LandingColors.foreground)),
               onTap: onGetStarted,
             ),
           ],

@@ -3,6 +3,7 @@ const { requireAuth } = require('./auth');
 
 const walletModel = require('../models/investorWallet');
 const commitmentsModel = require('../models/investmentCommitments');
+const opportunitiesModel = require('../models/investmentOpportunities');
 const notificationsModel = require('../models/notifications');
 const networkModel = require('../models/investorNetwork');
 const { broadcastNotification } = require('../socket');
@@ -65,6 +66,75 @@ router.post(
       label,
     });
     res.status(201).json(walletModel.toPublic(row));
+  })
+);
+
+// POST /api/investors/:investorId/wallet/reinvest
+// Investor-only: rolls part of their existing wallet balance into a new
+// investment opportunity instead of withdrawing it to a bank account.
+// Creates a normal Pending investment commitment (same admin
+// approve/reject queue as any other commitment) and debits the wallet
+// immediately, since the funds are already the investor's own money
+// sitting on the platform — no bank clearance step needed.
+// Body: { opportunityId, amount }
+router.post(
+  '/:investorId/wallet/reinvest',
+  ...requireOwner,
+  asyncHandler(async (req, res) => {
+    const { opportunityId, amount } = req.body || {};
+
+    if (!opportunityId) return res.status(400).json({ error: 'opportunityId is required.' });
+    if (typeof amount !== 'number' || amount <= 0) {
+      return res.status(400).json({ error: 'amount must be a positive number.' });
+    }
+
+    const opportunity = await opportunitiesModel.getById(opportunityId);
+    if (!opportunity) return res.status(404).json({ error: 'Investment opportunity not found.' });
+    if (opportunity.status !== 'Open') {
+      return res
+        .status(409)
+        .json({ error: `This opportunity is ${opportunity.status.toLowerCase()} and no longer accepting commitments.` });
+    }
+    if (amount < opportunity.minInvestment) {
+      return res.status(400).json({
+        error: `Minimum investment for this opportunity is ${opportunity.minInvestment}.`,
+      });
+    }
+
+    const { balance } = await walletModel.getSummary(req.params.investorId);
+    if (amount > balance) {
+      return res.status(409).json({ error: 'Reinvestment amount exceeds your available wallet balance.' });
+    }
+
+    const commitmentRow = await commitmentsModel.create({
+      userId: req.params.investorId,
+      opportunityId,
+      amount,
+    });
+    const commitment = commitmentsModel.toPublic(commitmentRow);
+
+    const txRow = await walletModel.reinvest(req.params.investorId, {
+      amount,
+      label: `Reinvested into "${opportunity.title}"`,
+      commitmentId: commitment.id,
+    });
+    const transaction = walletModel.toPublic(txRow);
+
+    try {
+      const notifRow = await notificationsModel.create({
+        recipientType: 'admin',
+        kind: 'investment_commitment',
+        title: 'New investment commitment (reinvestment)',
+        body: `${req.user.fullName} reinvested ${amount} from their wallet into "${opportunity.title}".`,
+        relatedId: commitment.id,
+      });
+      broadcastNotification('admin', null, notificationsModel.toPublic(notifRow));
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.error('[investorWallet] failed to notify admins of reinvestment', err);
+    }
+
+    res.status(201).json({ commitment, transaction });
   })
 );
 

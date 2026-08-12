@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../models/agent_account.dart';
 import '../models/auth_response.dart';
 import '../services/agent_service.dart';
 import '../theme/app_theme.dart';

@@ -22,7 +22,12 @@ const MIME_TYPES = {
 };
 
 const server = http.createServer((req, res) => {
-  let safePath = path.normalize(req.url.split('?')[0]).replace(/^(\.\.[\/\\])+/, '');
+  const requestPath = req.url.split('?')[0];
+  let safePath = path.normalize(requestPath).replace(/^(\.\.[\/\\])+/,'');
+  if (safePath.startsWith(path.sep)) {
+    safePath = safePath.slice(1);
+  }
+
   let filePath = path.join(WEB_DIR, safePath);
 
   if (fs.existsSync(filePath) && fs.statSync(filePath).isDirectory()) {

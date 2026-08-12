@@ -23,16 +23,17 @@ function listByInvestor(investorId) {
 }
 
 /**
- * Available balance = cleared payouts + all withdrawals (withdrawals
- * reserve funds the moment they're requested, before they clear — same
- * pattern as the agent wallet). Pending payouts are reported separately
- * and don't count toward the spendable balance yet.
+ * Available balance = cleared payouts + all withdrawals/reinvestments
+ * (withdrawals reserve funds the moment they're requested, before they clear —
+ * same pattern as the agent wallet; reinvestments clear immediately).
+ * Pending payouts are reported separately and don't count toward the spendable
+ * balance yet.
  */
 async function getSummary(investorId) {
   const { rows } = await query(
     `SELECT
        COALESCE(SUM(amount) FILTER (WHERE type = 'payout' AND status = 'cleared'), 0)
-         + COALESCE(SUM(amount) FILTER (WHERE type = 'withdrawal'), 0) AS balance,
+         + COALESCE(SUM(amount) FILTER (WHERE type IN ('withdrawal', 'reinvestment')), 0) AS balance,
        COALESCE(SUM(amount) FILTER (WHERE type = 'payout' AND status = 'pending'), 0) AS pending_clearance
      FROM investor_wallet_transactions
      WHERE investor_id = $1`,
@@ -64,6 +65,24 @@ function requestWithdrawal(investorId, { amount, bankAccountLast4, label }) {
   ).then((r) => r.rows[0]);
 }
 
+/**
+ * Rolls part of the investor's existing wallet balance into a new
+ * investment commitment instead of withdrawing it to a bank account.
+ * Recorded as a negative amount (same convention as a withdrawal) but
+ * clears immediately — the money never leaves the platform, it just
+ * moves from spendable balance into a Pending investment_commitments
+ * row. See the /api/investors/:id/wallet/reinvest route, which creates
+ * the commitment first and passes its id here as commitmentId.
+ */
+function reinvest(investorId, { amount, label, commitmentId }) {
+  return query(
+    `INSERT INTO investor_wallet_transactions (investor_id, type, amount, label, status, commitment_id)
+     VALUES ($1, 'reinvestment', $2, $3, 'cleared', $4)
+     RETURNING *`,
+    [investorId, -Math.abs(amount), label, commitmentId || null]
+  ).then((r) => r.rows[0]);
+}
+
 function clearTransaction(investorId, txId) {
   return query(
     `UPDATE investor_wallet_transactions
@@ -74,4 +93,12 @@ function clearTransaction(investorId, txId) {
   ).then((r) => r.rows[0] || null);
 }
 
-module.exports = { toPublic, listByInvestor, getSummary, addPayout, requestWithdrawal, clearTransaction };
+module.exports = {
+  toPublic,
+  listByInvestor,
+  getSummary,
+  addPayout,
+  requestWithdrawal,
+  reinvest,
+  clearTransaction,
+};

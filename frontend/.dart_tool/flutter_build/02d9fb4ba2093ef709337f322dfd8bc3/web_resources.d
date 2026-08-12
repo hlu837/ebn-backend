@@ -1,0 +1,1 @@
+ C:\\Users\\user\\Downloads\\onsite_app_compile_fixes\\onsite_app\\frontend\\build\\web\\manifest.json:  C:\\Users\\user\\Downloads\\onsite_app_compile_fixes\\onsite_app\\frontend\\web\\index.html C:\\Users\\user\\Downloads\\onsite_app_compile_fixes\\onsite_app\\frontend\\web\\manifest.json

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../models/auth_response.dart';
-import '../models/visitor_account.dart';
 import '../providers/favorites_controller.dart';
 import '../services/visitor_service.dart';
 import '../theme/app_theme.dart';
