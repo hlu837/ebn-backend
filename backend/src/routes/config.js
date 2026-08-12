@@ -26,9 +26,9 @@ router.get('/map', (req, res) => {
   }
 
   res.json({
-    provider: 'gebeta',
-    apiKey,
-    styleUrl: 'https://tiles.gebeta.app/styles/standard/style.json',
+    provider: 'openfreemap',
+    apiKey: apiKey || 'public',
+    styleUrl: 'https://tiles.openfreemap.org/styles/liberty',
     defaultCenter: DEFAULT_CENTER,
   });
 });

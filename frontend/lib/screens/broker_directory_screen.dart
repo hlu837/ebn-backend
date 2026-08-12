@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import '../models/asset.dart';
 import '../models/auth_response.dart';
@@ -476,41 +475,17 @@ class _DirectoryMapViewState extends State<_DirectoryMapView> {
                   child: Center(child: CircularProgressIndicator()),
                 );
               }
-              if (kIsWeb || snapshot.hasError || !snapshot.hasData) {
-                // Fallback: interactive painted map with positioned pins for Web or missing key.
-                return LayoutBuilder(
-                  builder: (context, constraints) {
-                    return Stack(
-                      children: [
-                        const Positioned.fill(child: BrokerMapBackground()),
-                        ...widget.brokers.map((b) {
-                          final offset = _project(
-                            b.latitude, b.longitude,
-                            minLat, maxLat, minLng, maxLng,
-                            constraints.biggest,
-                          );
-                          final isSelected = widget.highlighted?.id == b.id;
-                          return Positioned(
-                            left: offset.dx - 20,
-                            top: offset.dy - 44,
-                            child: BrokerMapPin(
-                              broker: b,
-                              selected: isSelected,
-                              onTap: () => widget.onSelect(b),
-                            ),
-                          );
-                        }),
-                      ],
-                    );
-                  },
+              if (snapshot.hasData) {
+                return RealBrokerMap(
+                  config: snapshot.data!,
+                  brokers: widget.brokers,
+                  selected: widget.highlighted,
+                  onBrokerTapped: widget.onSelect,
                 );
               }
-              // Real Gebeta Maps tiles + circle markers.
-              return RealBrokerMap(
-                config: snapshot.data!,
-                brokers: widget.brokers,
-                selected: widget.highlighted,
-                onBrokerTapped: widget.onSelect,
+              return const ColoredBox(
+                color: Color(0xFFE9E4D6),
+                child: Center(child: Text('Map service unavailable.')),
               );
             },
           ),

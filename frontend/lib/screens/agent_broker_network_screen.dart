@@ -1,6 +1,5 @@
 import 'dart:math' as math;
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -372,31 +371,17 @@ class _AgentMapViewState extends State<_AgentMapView> {
               if (snapshot.connectionState != ConnectionState.done) {
                 return const ColoredBox(color: Color(0xFFE9E4D6), child: Center(child: CircularProgressIndicator()));
               }
-              if (kIsWeb || snapshot.hasError || !snapshot.hasData) {
-                return LayoutBuilder(
-                  builder: (context, constraints) {
-                    return Stack(
-                      children: [
-                        const Positioned.fill(child: BrokerMapBackground()),
-                        ...widget.brokers.map((b) {
-                          final offset = _project(b.latitude, b.longitude, minLat, maxLat, minLng, maxLng, constraints.biggest);
-                          final isSelected = widget.highlighted?.id == b.id;
-                          return Positioned(
-                            left: offset.dx - 20,
-                            top: offset.dy - 44,
-                            child: BrokerMapPin(broker: b, selected: isSelected, onTap: () => widget.onSelect(b)),
-                          );
-                        }),
-                      ],
-                    );
-                  },
+              if (snapshot.hasData) {
+                return RealBrokerMap(
+                  config: snapshot.data!,
+                  brokers: widget.brokers,
+                  selected: widget.highlighted,
+                  onBrokerTapped: widget.onSelect,
                 );
               }
-              return RealBrokerMap(
-                config: snapshot.data!,
-                brokers: widget.brokers,
-                selected: widget.highlighted,
-                onBrokerTapped: widget.onSelect,
+              return const ColoredBox(
+                color: Color(0xFFE9E4D6),
+                child: Center(child: Text('Map service unavailable.')),
               );
             },
           ),

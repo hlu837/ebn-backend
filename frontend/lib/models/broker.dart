@@ -44,7 +44,8 @@ extension BrokerTierX on BrokerTier {
 
   /// Whether this tier is allowed to post across every category, or is
   /// restricted to a single locked category.
-  bool get canPostAnyCategory => this == BrokerTier.diamond || this == BrokerTier.gold;
+  bool get canPostAnyCategory =>
+      this == BrokerTier.diamond || this == BrokerTier.gold;
 
   IconData get icon {
     switch (this) {
@@ -139,7 +140,8 @@ class Broker {
   /// Addis Ababa's center with [hasPreciseLocation] = false so the map
   /// screen can skip plotting them.
   factory Broker.fromDirectoryJson(Map<String, dynamic> json) {
-    final specialtiesRaw = (json['specialties'] as List?)?.cast<String>() ?? const <String>[];
+    final specialtiesRaw =
+        (json['specialties'] as List?)?.cast<String>() ?? const <String>[];
     final specialties = specialtiesRaw.isEmpty
         ? AssetCategorySlug.values
         : specialtiesRaw.map(AssetCategorySlugX.fromSlug).toList();
@@ -147,10 +149,12 @@ class Broker {
     final lng = json['longitude'] as num?;
     return Broker(
       id: json['userId'] as String,
-      name: (json['name'] as String?)?.trim().isNotEmpty == true ? json['name'] as String : 'Agent',
+      name: (json['name'] as String?)?.trim().isNotEmpty == true
+          ? json['name'] as String
+          : 'Agent',
       company: (json['company'] as String?) ?? '',
       city: (json['city'] as String?) ?? '',
-      addressLine: null,
+      addressLine: json['addressLine'] as String?,
       phone: json['phone'] as String?,
       bio: json['bio'] as String?,
       rating: (json['rating'] as num?)?.toDouble() ?? 0,
@@ -166,7 +170,8 @@ class Broker {
   String get initials {
     final parts = name.trim().split(RegExp(r'\s+'));
     if (parts.length == 1) return parts.first.substring(0, 1).toUpperCase();
-    return (parts.first.substring(0, 1) + parts.last.substring(0, 1)).toUpperCase();
+    return (parts.first.substring(0, 1) + parts.last.substring(0, 1))
+        .toUpperCase();
   }
 
   /// Categories this broker is actually allowed to post listings in right
@@ -176,5 +181,3 @@ class Broker {
     return [lockedCategory ?? specialties.first];
   }
 }
-
-

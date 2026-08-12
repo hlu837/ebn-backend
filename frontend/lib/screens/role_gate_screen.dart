@@ -958,7 +958,6 @@ class _CategoryTile extends StatelessWidget {
   const _CategoryTile(
       {required this.label,
       required this.icon,
-      this.imageUrl,
       required this.selected,
       required this.onTap});
   @override

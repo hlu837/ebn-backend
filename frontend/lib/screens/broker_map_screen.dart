@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import '../models/asset.dart';
 import '../models/broker.dart';
@@ -180,43 +179,17 @@ class _BrokerMapScreenState extends State<BrokerMapScreen> {
                     child: Center(child: CircularProgressIndicator()),
                   );
                 }
-                if (!kIsWeb || snapshot.hasError || !snapshot.hasData) {
-                  // GebetaWebMap only supports Flutter Web (it's a thin
-                  // wrapper around Gebeta's JS SDK). On any other platform,
-                  // or when the map key is missing/unreachable, fall back to
-                  // the lightweight custom-painted pin map.
-                  return LayoutBuilder(
-                    builder: (context, constraints) {
-                      return Stack(
-                        children: [
-                          const Positioned.fill(child: BrokerMapBackground()),
-                          ...brokers.map((b) {
-                            final offset = _project(
-                              b.latitude, b.longitude,
-                              minLat, maxLat, minLng, maxLng,
-                              constraints.biggest,
-                            );
-                            final isSelected = _selected?.id == b.id;
-                            return Positioned(
-                              left: offset.dx - 20,
-                              top: offset.dy - 44,
-                              child: BrokerMapPin(
-                                broker: b,
-                                selected: isSelected,
-                                onTap: () => setState(() => _selected = b),
-                              ),
-                            );
-                          }),
-                        ],
-                      );
-                    },
+                if (snapshot.hasData) {
+                  return RealBrokerMap(
+                    config: snapshot.data!,
+                    brokers: brokers,
+                    selected: _selected,
+                    onBrokerTapped: (b) => setState(() => _selected = b),
                   );
                 }
-                return RealBrokerMap(
-                  config: snapshot.data!,
-                  brokers: brokers,
-                  selected: _selected,
-                  onBrokerTapped: (b) => setState(() => _selected = b),
+                return const ColoredBox(
+                  color: Color(0xFFE9E4D6),
+                  child: Center(child: Text('Map service unavailable.')),
                 );
               },
             ),
@@ -440,55 +413,7 @@ class _RealBrokerMapState extends State<RealBrokerMap> {
   }
 }
 
-class BrokerMapBackground extends StatelessWidget {
-  const BrokerMapBackground();
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: const Color(0xFFE9E4D6),
-      child: CustomPaint(painter: _MapGridPainter(), size: Size.infinite),
-    );
-  }
-}
-
-class _MapGridPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final blockPaint = Paint()..color = const Color(0xFFF2EEE1);
-    final roadPaint = Paint()
-      ..color = const Color(0xFFD8D0BC)
-      ..strokeWidth = 3;
-    final mainRoadPaint = Paint()
-      ..color = const Color(0xFFE8B23A).withOpacity(0.55)
-      ..strokeWidth = 5;
-
-    // Soft "land parcel" blocks.
-    const blockSize = 64.0;
-    for (double y = 0; y < size.height; y += blockSize) {
-      for (double x = 0; x < size.width; x += blockSize) {
-        if (((x / blockSize).floor() + (y / blockSize).floor()) % 2 == 0) {
-          canvas.drawRect(Rect.fromLTWH(x + 4, y + 4, blockSize - 8, blockSize - 8), blockPaint);
-        }
-      }
-    }
-
-    // Grid "streets".
-    for (double x = 0; x < size.width; x += blockSize) {
-      canvas.drawLine(Offset(x, 0), Offset(x, size.height), roadPaint);
-    }
-    for (double y = 0; y < size.height; y += blockSize) {
-      canvas.drawLine(Offset(0, y), Offset(size.width, y), roadPaint);
-    }
-
-    // A couple of "main roads" for visual interest.
-    canvas.drawLine(Offset(0, size.height * 0.38), Offset(size.width, size.height * 0.42), mainRoadPaint);
-    canvas.drawLine(Offset(size.width * 0.62, 0), Offset(size.width * 0.55, size.height), mainRoadPaint);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-}
 
 /// Small circular icon button that floats on top of the map (used for the
 /// back button) instead of the old full-width app-bar-style header.
