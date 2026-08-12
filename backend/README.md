@@ -72,7 +72,7 @@ Run the migration:
 npm run migrate
 ```
 
-Start the server:
+Start the server locally:
 
 ```bash
 npm start        # or: npm run dev  (nodemon, auto-restart on file changes)
@@ -90,6 +90,29 @@ Check it's alive and talking to Postgres:
 curl http://localhost:4000/health
 # {"ok":true,"db":"connected"}
 ```
+
+### Vercel deployment
+
+This backend can be deployed on Vercel using a single serverless function entrypoint.
+
+1. Add `vercel.json` in the `backend/` folder.
+2. Configure the Vercel project to use `backend/api.js` as the function entry.
+3. Add these environment variables in Vercel:
+   - `DATABASE_URL`
+   - `JWT_SECRET`
+   - `JWT_EXPIRES_IN`
+   - `CHAPA_SECRET_KEY`
+   - `CHAPA_PUBLIC_KEY`
+   - `CHAPA_WEBHOOK_SECRET`
+   - `CHAPA_RETURN_URL`
+   - `CHAPA_CALLBACK_URL`
+   - `CORS_ORIGIN` (optional)
+
+#### Limitations on Vercel
+
+- WebSocket / Socket.IO is not supported as a persistent live transport.
+- Background jobs like `investmentPayoutScheduler.start()` and in-memory expiry timers do not run reliably in serverless production.
+- For scheduled payouts or expiry re-arm logic, use Vercel Cron, an external worker, or move this logic to a managed job service.
 
 ## REST API — Tour requests
 
