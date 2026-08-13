@@ -41,7 +41,7 @@ class MapConfigException implements Exception {
 class MapConfigService {
   static const String baseUrl = String.fromEnvironment(
     'API_BASE_URL',
-    defaultValue: 'http://localhost:4000',
+    defaultValue: 'https://mlmpropertyebn.vercel.app',
   );
 
   // Cached in memory for the life of the app — no need to refetch this

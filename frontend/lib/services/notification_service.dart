@@ -84,7 +84,7 @@ class AppNotification {
 class NotificationService {
   static const String baseUrl = String.fromEnvironment(
     'API_BASE_URL',
-    defaultValue: 'http://localhost:4000',
+    defaultValue: 'https://mlmpropertyebn.vercel.app',
   );
 
   Uri _uri(String path) => Uri.parse('$baseUrl$path');
