@@ -79,7 +79,6 @@ class _SellPropertyFormScreenState extends State<SellPropertyFormScreen> {
     AssetCategorySlug.condominium,
     AssetCategorySlug.building,
     AssetCategorySlug.warehouse,
-    AssetCategorySlug.land,
     AssetCategorySlug.vehicles,
     AssetCategorySlug.machinery,
     AssetCategorySlug.constructionMaterials,

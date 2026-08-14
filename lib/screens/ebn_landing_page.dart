@@ -229,7 +229,7 @@ class _EBNLandingPageState extends State<EBNLandingPage> {
             AssetCategorySlug.warehouse, 'Warehouse', Icons.warehouse_outlined);
         break;
       case 5: // Land
-        _goToCategory(AssetCategorySlug.land, 'Land', Icons.landscape_outlined);
+        _goToCategory(AssetCategorySlug.others, 'Land', Icons.landscape_outlined);
         break;
       case 6: // Materials
         _goToCategory(AssetCategorySlug.constructionMaterials,

@@ -16,7 +16,6 @@ const kPropertyRequirementCategories = {
   AssetCategorySlug.condominium,
   AssetCategorySlug.building,
   AssetCategorySlug.warehouse,
-  AssetCategorySlug.land,
 };
 
 /// The Vehicles category goes through its own dedicated buyer/renter

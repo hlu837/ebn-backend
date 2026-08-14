@@ -47,7 +47,7 @@ const _serviceToAssetCategory = <AssetCategorySlug>[
   AssetCategorySlug.machinery,
   AssetCategorySlug.house,
   AssetCategorySlug.warehouse,
-  AssetCategorySlug.land,
+  AssetCategorySlug.others,
   AssetCategorySlug.constructionMaterials,
   AssetCategorySlug.others,
 ];
