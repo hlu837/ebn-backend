@@ -391,6 +391,15 @@ class _SellPropertyFormScreenState extends State<SellPropertyFormScreen> {
   }
 
   void _next() {
+    next();
+  }
+
+  void _back() {
+    back();
+  }
+
+  int get _lastStep => lastStep;
+
 
   @override
   void dispose() {
@@ -830,13 +839,13 @@ class _SellPropertyFormScreenState extends State<SellPropertyFormScreen> {
                   Row(
                     children: [
                       if (_step > 0) ...[
-                        Expanded(child: SecondaryButton(label: 'Back', onPressed: _isSubmitting ? null : _back)),
+                        Expanded(child: SecondaryButton(label: 'Back', onPressed: _isSubmitting ? null : back)),
                         const SizedBox(width: AppSpacing.sm),
                       ],
                       Expanded(
                         flex: 2,
                         child: PrimaryButton(
-                          label: _step == _lastStep ? 'Pay ETB ${_kListingFeeEtb.toStringAsFixed(0)} & submit' : 'Next',
+                          label: _step == lastStep ? 'Pay ETB ${_kListingFeeEtb.toStringAsFixed(0)} & submit' : 'Next',
                           isLoading: _isSubmitting,
                           backgroundColor: AppColors.primaryYellow,
                           foregroundColor: Colors.white,
@@ -856,7 +865,7 @@ class _SellPropertyFormScreenState extends State<SellPropertyFormScreen> {
 
   Widget _buildStep(BuildContext context) {
     if (_step == 0) return _buildCategoryStep();
-    if (widget.isAgentListing && _step == _lastStep - 1) return _buildAgentReportStep();
+    if (widget.isAgentListing && _step == lastStep - 1) return _buildAgentReportStep();
     if (_isVehicle) {
       switch (_step) {
         case 1:

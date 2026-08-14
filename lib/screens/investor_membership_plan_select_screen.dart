@@ -80,6 +80,7 @@ class InvestorMembershipPlanSelectScreen extends StatefulWidget {
 
 class _InvestorMembershipPlanSelectScreenState extends State<InvestorMembershipPlanSelectScreen> {
   InvestorMembershipPlan get _plan => kInvestorMembershipPlan;
+  bool _isProcessing = false;
 
   Future<void> _handlePaymentAndActivate() async {
     final req = await _showPaymentModal(_plan);
