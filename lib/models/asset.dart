@@ -9,6 +9,7 @@ enum AssetCategorySlug {
   warehouse,
   building,
   constructionMaterials,
+  land,
   others,
   realEstate, // legacy slug, kept so old mock/API data still resolves
 }
@@ -30,6 +31,8 @@ extension AssetCategorySlugX on AssetCategorySlug {
         return AssetCategorySlug.building;
       case 'construction-materials':
         return AssetCategorySlug.constructionMaterials;
+      case 'land':
+        return AssetCategorySlug.land;
       case 'others':
         return AssetCategorySlug.others;
       case 'real-estate':
@@ -60,6 +63,8 @@ extension AssetCategorySlugX on AssetCategorySlug {
         return 'Building';
       case AssetCategorySlug.constructionMaterials:
         return 'Construction Materials';
+      case AssetCategorySlug.land:
+        return 'Land';
       case AssetCategorySlug.others:
         return 'Others';
     }
@@ -87,6 +92,8 @@ extension AssetCategorySlugX on AssetCategorySlug {
         return 'construction-materials';
       case AssetCategorySlug.others:
         return 'others';
+      case AssetCategorySlug.land:
+        return 'land';
       case AssetCategorySlug.realEstate:
         return 'real-estate';
     }
