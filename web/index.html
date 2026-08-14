@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+
+  <!-- Lets the browser/PWA chrome know the real background & status-bar tint,
+       so the status bar (clock/battery/wifi) area blends with the app
+       instead of the OS drawing its own default bar over our content. -->
+  <meta name="theme-color" content="#14140F">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="EBN">
+
+  <title>EBN — Verify Any Asset</title>
+
+  <!-- MapLibre GL JS & GebetaMaps compatibility bridge for live web map rendering -->
+  <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.css" />
+  <script src="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.js"></script>
+  <script>
+    window.GebetaMaps = class GebetaMaps {
+      constructor(opts) {
+        this.apiKey = opts?.apiKey;
+      }
+      init(config) {
+        return new maplibregl.Map({
+          container: config.container,
+          style: config.style || 'https://demotiles.maplibre.org/style.json',
+          center: config.center,
+          zoom: config.zoom
+        });
+      }
+    };
+  </script>
+
+  <style>
+    /* Fill the true device viewport (not just the visible browser chrome
+       area) and paint the safe-area strip behind the status bar with the
+       app's own background so nothing looks cut off or mismatched before
+       Flutter takes over. */
+    html, body {
+      height: 100%;
+      margin: 0;
+      background: #F7F6F1;
+    }
+  </style>
+</head>
+<body>
+  <script src="flutter_bootstrap.js" async></script>
+</body>
+</html>
+
