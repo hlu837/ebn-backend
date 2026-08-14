@@ -51,16 +51,20 @@ class AgentService {
     required double amount,
     required String token,
   }) async {
-    final json = await _post('/api/agents/$agentId/wallet/withdraw', {
-      'amount': amount,
-    }, token: token);
+    final json = await _post(
+        '/api/agents/$agentId/wallet/withdraw',
+        {
+          'amount': amount,
+        },
+        token: token);
     return AgentWalletTransaction.fromJson(json);
   }
 
   // ── Schedule ─────────────────────────────────────────────────────────
 
   /// GET /api/agents/:agentId/schedule
-  Future<List<AgentBooking>> getSchedule(String agentId, {required String token}) async {
+  Future<List<AgentBooking>> getSchedule(String agentId,
+      {required String token}) async {
     final rows = await _getList('/api/agents/$agentId/schedule', token: token);
     return rows.map(AgentBooking.fromJson).toList();
   }
@@ -75,13 +79,16 @@ class AgentService {
     int? durationMinutes,
     required String token,
   }) async {
-    final json = await _post('/api/agents/$agentId/schedule', {
-      'clientName': clientName,
-      'propertyTitle': propertyTitle,
-      if (address != null) 'address': address,
-      'startAt': startAt.toIso8601String(),
-      if (durationMinutes != null) 'durationMinutes': durationMinutes,
-    }, token: token);
+    final json = await _post(
+        '/api/agents/$agentId/schedule',
+        {
+          'clientName': clientName,
+          'propertyTitle': propertyTitle,
+          if (address != null) 'address': address,
+          'startAt': startAt.toIso8601String(),
+          if (durationMinutes != null) 'durationMinutes': durationMinutes,
+        },
+        token: token);
     return AgentBooking.fromJson(json);
   }
 
@@ -93,22 +100,27 @@ class AgentService {
     String? status,
     required String token,
   }) async {
-    final json = await _patch('/api/agents/$agentId/schedule/$bookingId', {
-      if (startAt != null) 'startAt': startAt.toIso8601String(),
-      if (status != null) 'status': status,
-    }, token: token);
+    final json = await _patch(
+        '/api/agents/$agentId/schedule/$bookingId',
+        {
+          if (startAt != null) 'startAt': startAt.toIso8601String(),
+          if (status != null) 'status': status,
+        },
+        token: token);
     return AgentBooking.fromJson(json);
   }
 
   /// DELETE /api/agents/:agentId/schedule/:id
-  Future<void> cancelBooking(String agentId, String bookingId, {required String token}) async {
+  Future<void> cancelBooking(String agentId, String bookingId,
+      {required String token}) async {
     await _delete('/api/agents/$agentId/schedule/$bookingId', token: token);
   }
 
   // ── Settings ─────────────────────────────────────────────────────────
 
   /// GET /api/agents/:agentId/settings
-  Future<AgentSettingsData> getSettings(String agentId, {required String token}) async {
+  Future<AgentSettingsData> getSettings(String agentId,
+      {required String token}) async {
     final json = await _get('/api/agents/$agentId/settings', token: token);
     return AgentSettingsData.fromJson(json);
   }
@@ -130,30 +142,39 @@ class AgentService {
     String? bankAccountNumber,
     required String token,
   }) async {
-    final json = await _patch('/api/agents/$agentId/settings', {
-      if (notifyNewDispatches != null) 'notifyNewDispatches': notifyNewDispatches,
-      if (notifyChatMessages != null) 'notifyChatMessages': notifyChatMessages,
-      if (notifyPromotions != null) 'notifyPromotions': notifyPromotions,
-      if (notifyPayouts != null) 'notifyPayouts': notifyPayouts,
-      if (language != null) 'language': language,
-      if (bankName != null) 'bankName': bankName,
-      if (bankAccountHolder != null) 'bankAccountHolder': bankAccountHolder,
-      if (bankAccountNumber != null) 'bankAccountNumber': bankAccountNumber,
-    }, token: token);
+    final json = await _patch(
+        '/api/agents/$agentId/settings',
+        {
+          if (notifyNewDispatches != null)
+            'notifyNewDispatches': notifyNewDispatches,
+          if (notifyChatMessages != null)
+            'notifyChatMessages': notifyChatMessages,
+          if (notifyPromotions != null) 'notifyPromotions': notifyPromotions,
+          if (notifyPayouts != null) 'notifyPayouts': notifyPayouts,
+          if (language != null) 'language': language,
+          if (bankName != null) 'bankName': bankName,
+          if (bankAccountHolder != null) 'bankAccountHolder': bankAccountHolder,
+          if (bankAccountNumber != null) 'bankAccountNumber': bankAccountNumber,
+        },
+        token: token);
     return AgentSettingsData.fromJson(json);
   }
 
   // ── Membership ───────────────────────────────────────────────────────
 
   /// GET /api/agents/:agentId/membership
-  Future<AgentMembershipData> getMembership(String agentId, {required String token}) async {
+  Future<AgentMembershipData> getMembership(String agentId,
+      {required String token}) async {
     final json = await _get('/api/agents/$agentId/membership', token: token);
     return AgentMembershipData.fromJson(json);
   }
 
   /// POST /api/agents/:agentId/membership/upgrade
-  Future<AgentMembershipData> upgradeMembership(String agentId, {required String tier, required String token}) async {
-    final json = await _post('/api/agents/$agentId/membership/upgrade', {'tier': tier}, token: token);
+  Future<AgentMembershipData> upgradeMembership(String agentId,
+      {required String tier, required String token}) async {
+    final json = await _post(
+        '/api/agents/$agentId/membership/upgrade', {'tier': tier},
+        token: token);
     return AgentMembershipData.fromJson(json);
   }
 
@@ -173,17 +194,23 @@ class AgentService {
     List<String>? specialties,
     required String token,
   }) async {
-    final json = await _patch('/api/agents/$agentId/profile', {
-      if (bio != null) 'bio': bio,
-      if (city != null) 'city': city,
-      if (specialties != null) 'specialties': specialties,
-    }, token: token);
+    final json = await _patch(
+        '/api/agents/$agentId/profile',
+        {
+          if (bio != null) 'bio': bio,
+          if (city != null) 'city': city,
+          if (specialties != null) 'specialties': specialties,
+        },
+        token: token);
     return AgentProfileData.fromJson(json);
   }
 
   /// POST /api/agents/:agentId/profile/boost
-  Future<AgentProfileData> boostProfile(String agentId, {int days = 7, required String token}) async {
-    final json = await _post('/api/agents/$agentId/profile/boost', {'days': days}, token: token);
+  Future<AgentProfileData> boostProfile(String agentId,
+      {int days = 7, required String token}) async {
+    final json = await _post(
+        '/api/agents/$agentId/profile/boost', {'days': days},
+        token: token);
     return AgentProfileData.fromJson(json);
   }
 
@@ -196,11 +223,14 @@ class AgentService {
     required String body,
     required String token,
   }) async {
-    final json = await _post('/api/support-tickets', {
-      'category': category,
-      'subject': subject,
-      'body': body,
-    }, token: token);
+    final json = await _post(
+        '/api/support-tickets',
+        {
+          'category': category,
+          'subject': subject,
+          'body': body,
+        },
+        token: token);
     return SupportTicket.fromJson(json);
   }
 
@@ -219,8 +249,11 @@ class AgentService {
   /// grouped by customer user id and newest-first within each group — one
   /// call to populate the whole Customers screen instead of one per row.
   /// Backed by `GET /api/agents/:agentId/customer-notes`.
-  Future<Map<String, List<CustomerNoteEntry>>> fetchCustomerNotes(String agentId, {required String token}) async {
-    final rows = await _getList('/api/agents/$agentId/customer-notes', token: token);
+  Future<Map<String, List<CustomerNoteEntry>>> fetchCustomerNotes(
+      String agentId,
+      {required String token}) async {
+    final rows =
+        await _getList('/api/agents/$agentId/customer-notes', token: token);
     final entries = rows.map(CustomerNoteEntry.fromJson).toList();
     final byCustomer = <String, List<CustomerNoteEntry>>{};
     for (final e in entries) {
@@ -232,8 +265,13 @@ class AgentService {
   /// Appends a new timestamped entry to one customer's note log — it
   /// never edits or replaces an earlier entry. Backed by
   /// `POST /api/agents/:agentId/customer-notes/:customerUserId/entries`.
-  Future<CustomerNoteEntry> addCustomerNoteEntry(String agentId, String customerUserId, String body, {required String token}) async {
-    final json = await _post('/api/agents/$agentId/customer-notes/$customerUserId/entries', {'body': body}, token: token);
+  Future<CustomerNoteEntry> addCustomerNoteEntry(
+      String agentId, String customerUserId, String body,
+      {required String token}) async {
+    final json = await _post(
+        '/api/agents/$agentId/customer-notes/$customerUserId/entries',
+        {'body': body},
+        token: token);
     return CustomerNoteEntry.fromJson(json);
   }
 
@@ -242,7 +280,8 @@ class AgentService {
   /// GET /api/agents/:agentId/network — this agent's "AGT-" referral
   /// code/link, their downline, and override commission totals earned
   /// from that downline. Separate from the Affiliater program.
-  Future<AgentNetworkData> getNetwork(String agentId, {required String token}) async {
+  Future<AgentNetworkData> getNetwork(String agentId,
+      {required String token}) async {
     final json = await _get('/api/agents/$agentId/network', token: token);
     return AgentNetworkData.fromJson(json);
   }
@@ -261,7 +300,6 @@ class AgentService {
     String? excludeUserId,
     String? userId,
   }) async {
-    _requireToken(_token);
     final params = <String, String>{
       if (specialty != null && specialty.isNotEmpty) 'specialty': specialty,
       if (city != null && city.isNotEmpty) 'city': city,
@@ -269,15 +307,16 @@ class AgentService {
       if (excludeUserId != null) 'excludeUserId': excludeUserId,
       if (userId != null) 'userId': userId,
     };
-    final uri = _uri('/api/agents').replace(queryParameters: params.isEmpty ? null : params);
+    final uri = _uri('/api/agents')
+        .replace(queryParameters: params.isEmpty ? null : params);
     http.Response res;
     try {
       res = await http.get(
         uri,
-        headers: {'Authorization': 'Bearer $_token'},
       ).timeout(const Duration(seconds: 15));
     } catch (_) {
-      throw const AgentServiceException("Couldn't reach the server. Check your connection and try again.");
+      throw const AgentServiceException(
+          "Couldn't reach the server. Check your connection and try again.");
     }
     dynamic json;
     try {
@@ -286,51 +325,68 @@ class AgentService {
       throw const AgentServiceException('Unexpected response from the server.');
     }
     if (res.statusCode < 200 || res.statusCode >= 300) {
-      final error = json is Map<String, dynamic> ? json['error'] as String? : null;
-      throw AgentServiceException(error ?? 'Something went wrong (${res.statusCode}).');
+      final error =
+          json is Map<String, dynamic> ? json['error'] as String? : null;
+      throw AgentServiceException(
+          error ?? 'Something went wrong (${res.statusCode}).');
     }
     return (json as List).cast<Map<String, dynamic>>();
   }
 
   // ── internals ────────────────────────────────────────────────────────
 
+  String _requireToken(String? token) {
+    final cleaned = token?.trim();
+    if (cleaned == null || cleaned.isEmpty) {
+      throw const AgentServiceException(
+          'Your session has expired. Please sign in again.');
+    }
+    return cleaned;
+  }
+
   Map<String, String> _headers(String? token) => {
         'Content-Type': 'application/json',
-        if (token != null) 'Authorization': 'Bearer $token',
+        if (token != null) 'Authorization': 'Bearer ${_requireToken(token)}',
       };
 
-  Future<Map<String, dynamic>> _post(String path, Map<String, dynamic> body, {String? token}) async {
+  Future<Map<String, dynamic>> _post(String path, Map<String, dynamic> body,
+      {String? token}) async {
     http.Response res;
     try {
       res = await http
           .post(_uri(path), headers: _headers(token), body: jsonEncode(body))
           .timeout(const Duration(seconds: 15));
     } catch (_) {
-      throw const AgentServiceException("Couldn't reach the server. Check your connection and try again.");
+      throw const AgentServiceException(
+          "Couldn't reach the server. Check your connection and try again.");
     }
     return _decode(res);
   }
 
-  Future<Map<String, dynamic>> _patch(String path, Map<String, dynamic> body, {String? token}) async {
+  Future<Map<String, dynamic>> _patch(String path, Map<String, dynamic> body,
+      {String? token}) async {
     http.Response res;
     try {
       res = await http
           .patch(_uri(path), headers: _headers(token), body: jsonEncode(body))
           .timeout(const Duration(seconds: 15));
     } catch (_) {
-      throw const AgentServiceException("Couldn't reach the server. Check your connection and try again.");
+      throw const AgentServiceException(
+          "Couldn't reach the server. Check your connection and try again.");
     }
     return _decode(res);
   }
 
-  Future<Map<String, dynamic>> _put(String path, Map<String, dynamic> body, {String? token}) async {
+  Future<Map<String, dynamic>> _put(String path, Map<String, dynamic> body,
+      {String? token}) async {
     http.Response res;
     try {
       res = await http
           .put(_uri(path), headers: _headers(token), body: jsonEncode(body))
           .timeout(const Duration(seconds: 15));
     } catch (_) {
-      throw const AgentServiceException("Couldn't reach the server. Check your connection and try again.");
+      throw const AgentServiceException(
+          "Couldn't reach the server. Check your connection and try again.");
     }
     return _decode(res);
   }
@@ -338,19 +394,26 @@ class AgentService {
   Future<Map<String, dynamic>> _get(String path, {String? token}) async {
     http.Response res;
     try {
-      res = await http.get(_uri(path), headers: _headers(token)).timeout(const Duration(seconds: 15));
+      res = await http
+          .get(_uri(path), headers: _headers(token))
+          .timeout(const Duration(seconds: 15));
     } catch (_) {
-      throw const AgentServiceException("Couldn't reach the server. Check your connection and try again.");
+      throw const AgentServiceException(
+          "Couldn't reach the server. Check your connection and try again.");
     }
     return _decode(res);
   }
 
-  Future<List<Map<String, dynamic>>> _getList(String path, {String? token}) async {
+  Future<List<Map<String, dynamic>>> _getList(String path,
+      {String? token}) async {
     http.Response res;
     try {
-      res = await http.get(_uri(path), headers: _headers(token)).timeout(const Duration(seconds: 15));
+      res = await http
+          .get(_uri(path), headers: _headers(token))
+          .timeout(const Duration(seconds: 15));
     } catch (_) {
-      throw const AgentServiceException("Couldn't reach the server. Check your connection and try again.");
+      throw const AgentServiceException(
+          "Couldn't reach the server. Check your connection and try again.");
     }
     dynamic json;
     try {
@@ -359,8 +422,10 @@ class AgentService {
       throw const AgentServiceException('Unexpected response from the server.');
     }
     if (res.statusCode < 200 || res.statusCode >= 300) {
-      final error = json is Map<String, dynamic> ? json['error'] as String? : null;
-      throw AgentServiceException(error ?? 'Something went wrong (${res.statusCode}).');
+      final error =
+          json is Map<String, dynamic> ? json['error'] as String? : null;
+      throw AgentServiceException(
+          error ?? 'Something went wrong (${res.statusCode}).');
     }
     return (json as List<dynamic>).cast<Map<String, dynamic>>();
   }
@@ -368,9 +433,12 @@ class AgentService {
   Future<void> _delete(String path, {String? token}) async {
     http.Response res;
     try {
-      res = await http.delete(_uri(path), headers: _headers(token)).timeout(const Duration(seconds: 15));
+      res = await http
+          .delete(_uri(path), headers: _headers(token))
+          .timeout(const Duration(seconds: 15));
     } catch (_) {
-      throw const AgentServiceException("Couldn't reach the server. Check your connection and try again.");
+      throw const AgentServiceException(
+          "Couldn't reach the server. Check your connection and try again.");
     }
     if (res.statusCode < 200 || res.statusCode >= 300) {
       Map<String, dynamic>? json;
@@ -379,7 +447,8 @@ class AgentService {
       } catch (_) {
         // ignore
       }
-      throw AgentServiceException(json?['error'] as String? ?? 'Something went wrong (${res.statusCode}).');
+      throw AgentServiceException(json?['error'] as String? ??
+          'Something went wrong (${res.statusCode}).');
     }
   }
 
@@ -391,7 +460,8 @@ class AgentService {
       throw const AgentServiceException('Unexpected response from the server.');
     }
     if (res.statusCode < 200 || res.statusCode >= 300) {
-      throw AgentServiceException(json['error'] as String? ?? 'Something went wrong (${res.statusCode}).');
+      throw AgentServiceException(json['error'] as String? ??
+          'Something went wrong (${res.statusCode}).');
     }
     return json;
   }
