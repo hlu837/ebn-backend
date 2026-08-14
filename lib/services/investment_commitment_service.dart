@@ -40,12 +40,22 @@ class InvestmentCommitmentService {
     return InvestmentCommitment.fromJson(jsonDecode(res) as Map<String, dynamic>);
   }
 
-  /// This investor's full commitment history, newest first.
   Future<List<InvestmentCommitment>> listMine({required String token}) async {
-    final res = await _get('/api/investment-commitments/me', token: token);
-    return (jsonDecode(res) as List)
-        .map((e) => InvestmentCommitment.fromJson(e as Map<String, dynamic>))
-        .toList();
+    try {
+      final res = await _get('/api/investment-commitments/me', token: token);
+      final dynamic json = jsonDecode(res);
+      if (json is List) {
+        return json.map((e) => InvestmentCommitment.fromJson(e as Map<String, dynamic>)).toList();
+      } else if (json is Map<String, dynamic> && json['commitments'] is List) {
+        return (json['commitments'] as List).map((e) => InvestmentCommitment.fromJson(e as Map<String, dynamic>)).toList();
+      } else if (json is Map<String, dynamic> && json['data'] is List) {
+        return (json['data'] as List).map((e) => InvestmentCommitment.fromJson(e as Map<String, dynamic>)).toList();
+      }
+      return [];
+    } catch (e) {
+      if (e is InvestmentCommitmentException) rethrow;
+      throw InvestmentCommitmentException("Failed to fetch commitments: $e");
+    }
   }
 
   /// Admin queue — every pending commitment.

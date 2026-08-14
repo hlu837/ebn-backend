@@ -41,9 +41,9 @@ class InvestmentCommitment {
 
   factory InvestmentCommitment.fromJson(Map<String, dynamic> json) {
     return InvestmentCommitment(
-      id: json['id'] as String,
-      userId: json['userId'] as String,
-      opportunityId: json['opportunityId'] as String,
+      id: json['id'] as String? ?? '',
+      userId: json['userId'] as String? ?? '',
+      opportunityId: json['opportunityId'] as String? ?? '',
       amount: (json['amount'] as num?)?.toDouble() ?? 0,
       status: json['status'] as String? ?? 'Pending',
       adminNote: json['adminNote'] as String?,

@@ -246,6 +246,19 @@ class _InvestorMembershipPlanSelectScreenState extends State<InvestorMembershipP
                     backgroundColor: _plan.primaryColor,
                     onPressed: _handlePaymentAndActivate,
                   ),
+                  const SizedBox(height: AppSpacing.xs),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(builder: (_) => InvestorHomeScreen(user: widget.user)),
+                        (route) => false,
+                      );
+                    },
+                    child: const Text(
+                      'Skip for now & explore workspace',
+                      style: TextStyle(color: AppColors.slate, fontSize: 13, fontWeight: FontWeight.w600),
+                    ),
+                  ),
                 ],
               ),
             ),

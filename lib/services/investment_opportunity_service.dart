@@ -27,12 +27,22 @@ class InvestmentOpportunityService {
 
   Uri _uri(String path) => Uri.parse('$baseUrl$path');
 
-  /// Investor-facing feed: open deals first, then newest first.
   Future<List<InvestmentOpportunity>> list() async {
-    final res = await _get('/api/investment-opportunities');
-    return (jsonDecode(res) as List)
-        .map((e) => InvestmentOpportunity.fromJson(e as Map<String, dynamic>))
-        .toList();
+    try {
+      final res = await _get('/api/investment-opportunities');
+      final dynamic json = jsonDecode(res);
+      if (json is List) {
+        return json.map((e) => InvestmentOpportunity.fromJson(e as Map<String, dynamic>)).toList();
+      } else if (json is Map<String, dynamic> && json['opportunities'] is List) {
+        return (json['opportunities'] as List).map((e) => InvestmentOpportunity.fromJson(e as Map<String, dynamic>)).toList();
+      } else if (json is Map<String, dynamic> && json['data'] is List) {
+        return (json['data'] as List).map((e) => InvestmentOpportunity.fromJson(e as Map<String, dynamic>)).toList();
+      }
+      return [];
+    } catch (e) {
+      if (e is InvestmentOpportunityException) rethrow;
+      throw InvestmentOpportunityException("Failed to fetch opportunities: $e");
+    }
   }
 
   /// Admin management list: every opportunity, newest first.
