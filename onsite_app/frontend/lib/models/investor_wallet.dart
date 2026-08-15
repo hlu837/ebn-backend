@@ -26,9 +26,9 @@ class InvestorWalletTransaction {
 
   factory InvestorWalletTransaction.fromJson(Map<String, dynamic> json) {
     return InvestorWalletTransaction(
-      id: json['id'] as String,
-      investorId: json['investorId'] as String,
-      type: json['type'] as String,
+      id: json['id'] as String? ?? '',
+      investorId: json['investorId'] as String? ?? '',
+      type: json['type'] as String? ?? 'payout',
       amount: (json['amount'] as num?)?.toDouble() ?? 0,
       label: json['label'] as String? ?? '',
       status: json['status'] as String? ?? 'pending',

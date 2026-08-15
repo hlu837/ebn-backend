@@ -32,9 +32,9 @@ class InvestmentOpportunity {
 
   factory InvestmentOpportunity.fromJson(Map<String, dynamic> json) {
     return InvestmentOpportunity(
-      id: json['id'] as String,
-      title: json['title'] as String,
-      description: json['description'] as String,
+      id: json['id'] as String? ?? '',
+      title: json['title'] as String? ?? '',
+      description: json['description'] as String? ?? '',
       category: json['category'] as String? ?? 'Other',
       status: json['status'] as String? ?? 'Open',
       targetAmount: (json['targetAmount'] as num?)?.toDouble() ?? 0,

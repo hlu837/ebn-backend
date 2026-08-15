@@ -212,6 +212,7 @@ class _ErrorState extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: 80, horizontal: AppSpacing.lg),
           child: Center(
             child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
                 const Icon(Icons.wifi_off_rounded, size: 32, color: AppColors.slate),
                 const SizedBox(height: AppSpacing.sm),

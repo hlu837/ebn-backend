@@ -574,7 +574,7 @@ class _CategoryListingScreenState extends State<CategoryListingScreen> {
                         crossAxisCount: 2,
                         mainAxisSpacing: 20,
                         crossAxisSpacing: 16,
-                        childAspectRatio: 0.55,
+                        childAspectRatio: 0.48,
                       ),
                       itemCount: assets.length,
                       itemBuilder: (context, i) {

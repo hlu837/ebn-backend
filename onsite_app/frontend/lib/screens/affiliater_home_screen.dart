@@ -160,12 +160,18 @@ class _AffiliaterHomeScreenState extends State<AffiliaterHomeScreen> {
     return list;
   }
 
+  String get _appBaseUrl {
+    try {
+      if (Uri.base.scheme == 'http' || Uri.base.scheme == 'https') {
+        return Uri.base.origin;
+      }
+    } catch (_) {}
+    return 'https://app.ebn.com'; // Default production or deep-link fallback
+  }
+
   void _copyCode() async {
     try {
-      final origin = Uri.base.origin.isNotEmpty
-          ? Uri.base.origin
-          : 'http://localhost:8080';
-      final shareUrl = '$origin/?ref=$_affiliateCode';
+      final shareUrl = '$_appBaseUrl/?ref=$_affiliateCode';
       await Clipboard.setData(ClipboardData(text: shareUrl));
       if (!mounted) return;
       AppToast.showSuccess(context, 'Referral link copied to clipboard');
@@ -194,7 +200,7 @@ class _AffiliaterHomeScreenState extends State<AffiliaterHomeScreen> {
   void _generateLink(Asset asset) async {
     try {
       final token = widget.user.token;
-      String url = '${Uri.base.origin}/assets/${asset.id}?ref=$_affiliateCode';
+      String url = '$_appBaseUrl/assets/${asset.id}?ref=$_affiliateCode';
       if (token != null && token.isNotEmpty) {
         try {
           final linkData =

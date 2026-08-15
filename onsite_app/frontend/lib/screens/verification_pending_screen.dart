@@ -272,16 +272,19 @@ class _VerificationPendingScreenState extends State<VerificationPendingScreen> {
                   ),
                 ),
 
-              if (!isRejected)
-                SizedBox(
-                  width: double.infinity,
-                  child: PrimaryButton(
-                    label: 'Check Approval Status',
-                    isLoading: _checking,
-                    onPressed: () => _checkStatus(),
-                  ),
-                ),
               const SizedBox(height: AppSpacing.md),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pushAndRemoveUntil(
+                    MaterialPageRoute(builder: (_) => dashboardForRole(widget.targetRole, widget.user)),
+                    (route) => false,
+                  );
+                },
+                child: Text(
+                  'Continue to ${widget.targetRole.label} Workspace',
+                  style: const TextStyle(color: AppColors.slate, fontSize: 13, fontWeight: FontWeight.w600),
+                ),
+              ),
             ],
           ),
         ),

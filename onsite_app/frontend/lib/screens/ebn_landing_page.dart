@@ -229,7 +229,7 @@ class _EBNLandingPageState extends State<EBNLandingPage> {
             AssetCategorySlug.warehouse, 'Warehouse', Icons.warehouse_outlined);
         break;
       case 5: // Land
-        _goToCategory(AssetCategorySlug.land, 'Land', Icons.landscape_outlined);
+        _goToCategory(AssetCategorySlug.others, 'Land', Icons.landscape_outlined);
         break;
       case 6: // Materials
         _goToCategory(AssetCategorySlug.constructionMaterials,
@@ -285,8 +285,7 @@ class _EBNLandingPageState extends State<EBNLandingPage> {
             _buildTrendingGrid(),
             const SizedBox(height: 32),
             _buildCTASection(),
-            const SizedBox(height: 24),
-            _buildFooter(),
+            const SizedBox(height: 32),
           ],
         ),
       ),
@@ -809,7 +808,7 @@ class _EBNLandingPageState extends State<EBNLandingPage> {
           crossAxisCount: 2,
           mainAxisSpacing: 20,
           crossAxisSpacing: 16,
-          childAspectRatio: 0.55,
+          childAspectRatio: 0.48,
         ),
         itemBuilder: (context, index) {
           final ad = _ads[index];
@@ -883,160 +882,8 @@ class _EBNLandingPageState extends State<EBNLandingPage> {
   }
 
   Widget _buildFooter() {
-    return Container(
-      width: double.infinity,
-      color: EBNColors.darkCard,
-      padding: const EdgeInsets.fromLTRB(24, 32, 24, 24),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            'EBN',
-            style: TextStyle(
-                color: Colors.white, fontSize: 22, fontWeight: FontWeight.w900),
-          ),
-          const SizedBox(height: 10),
-          Text(
-            'Verify any asset. On-site. On demand.',
-            style: TextStyle(
-                color: Colors.white.withValues(alpha: 0.6), fontSize: 13),
-          ),
-          const SizedBox(height: 28),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: _footerColumn('QUICK LINKS', [
-                  _FooterItem('Order Verification', _openOrderFlow),
-                  _FooterItem('Find an Agent', () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                      builder: (_) => const BrokerMapScreen(
-                        category: AssetCategorySlug.others,
-                        categoryLabel: 'All',
-                        showAllBrokers: true,
-                      ),
-                    ));
-                  }),
-                  _FooterItem('How It Works', () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                      builder: (_) => const HowItWorksScreen(),
-                    ));
-                  }),
-                  _FooterItem('About Us', () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                      builder: (_) => const AboutUsScreen(),
-                    ));
-                  }),
-                  _FooterItem('Platform Features', () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                      builder: (_) => const PlatformFeaturesScreen(),
-                    ));
-                  }),
-                ]),
-              ),
-              Expanded(
-                child: _footerColumn('SUPPORT & MORE', [
-                  _FooterItem('FAQs', () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                      builder: (_) => const FaqScreen(),
-                    ));
-                  }),
-                  _FooterItem('Contact Us', () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                      builder: (_) => const ContactUsScreen(),
-                    ));
-                  }),
-                  _FooterItem('Membership Tiers', () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                      builder: (_) => const MembershipScreen(),
-                    ));
-                  }),
-                  _FooterItem('Terms of Service', () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Terms of Service page')),
-                    );
-                  }),
-                  _FooterItem('Privacy Policy', () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Privacy Policy page')),
-                    );
-                  }),
-                ]),
-              ),
-            ],
-          ),
-          const SizedBox(height: 24),
-          Row(
-            children: [
-              _socialIcon(Icons.facebook),
-              _socialIcon(Icons.camera_alt_outlined),
-              _socialIcon(Icons.help_outline),
-              _socialIcon(Icons.business_center_outlined),
-            ],
-          ),
-          const SizedBox(height: 24),
-          Divider(color: Colors.white.withValues(alpha: 0.1)),
-          const SizedBox(height: 12),
-          Text(
-            '© 2026 EBN. Addis Ababa, Ethiopia.',
-            style: TextStyle(
-                color: Colors.white.withValues(alpha: 0.4), fontSize: 11),
-          ),
-        ],
-      ),
-    );
+    return const SizedBox.shrink();
   }
-
-  Widget _footerColumn(String title, List<_FooterItem> items) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          title,
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 11.5,
-            fontWeight: FontWeight.w700,
-            letterSpacing: 0.5,
-          ),
-        ),
-        const SizedBox(height: 12),
-        ...items.map(
-          (item) => Padding(
-            padding: const EdgeInsets.only(bottom: 10),
-            child: GestureDetector(
-              onTap: item.onTap,
-              child: Text(
-                item.label,
-                style: TextStyle(
-                    color: Colors.white.withValues(alpha: 0.65),
-                    fontSize: 12.5),
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _socialIcon(IconData icon) {
-    return Container(
-      margin: const EdgeInsets.only(right: 12),
-      width: 34,
-      height: 34,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        border: Border.all(color: Colors.white.withValues(alpha: 0.3)),
-      ),
-      child: Icon(icon, color: Colors.white, size: 16),
-    );
-  }
-}
-
-class _FooterItem {
-  final String label;
-  final VoidCallback onTap;
-  _FooterItem(this.label, this.onTap);
 }
 
 // ---------------------------------------------------------------------------

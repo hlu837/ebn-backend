@@ -153,7 +153,7 @@ class _AffiliatePropertiesScreenState extends State<AffiliatePropertiesScreen> {
                       crossAxisCount: 2,
                       mainAxisSpacing: AppSpacing.md,
                       crossAxisSpacing: AppSpacing.md,
-                      childAspectRatio: 0.72,
+                      childAspectRatio: 0.60,
                     ),
                     itemCount: filtered.length,
                     itemBuilder: (context, i) => _PropertyGridCard(

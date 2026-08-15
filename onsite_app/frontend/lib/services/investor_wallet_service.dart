@@ -44,8 +44,17 @@ class InvestorWalletService {
   Uri _uri(String path) => Uri.parse('$baseUrl$path');
 
   Future<InvestorWalletSummary> getWallet({required String token, required String investorId}) async {
-    final res = await _get('/api/investors/$investorId/wallet', token: token);
-    return InvestorWalletSummary.fromJson(jsonDecode(res) as Map<String, dynamic>);
+    try {
+      final res = await _get('/api/investors/$investorId/wallet', token: token);
+      final dynamic json = jsonDecode(res);
+      if (json is Map<String, dynamic>) {
+        return InvestorWalletSummary.fromJson(json);
+      }
+      return const InvestorWalletSummary(balance: 0, pendingClearance: 0, transactions: []);
+    } catch (e) {
+      if (e is InvestorWalletException) rethrow;
+      throw InvestorWalletException("Failed to fetch wallet summary: $e");
+    }
   }
 
   Future<InvestorWalletTransaction> withdraw({

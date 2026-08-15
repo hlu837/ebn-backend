@@ -444,8 +444,7 @@ class _ListingWithChat extends StatelessWidget {
     Navigator.of(context).push(MaterialPageRoute(
       builder: (_) => AssetDetailScreen(
         asset: asset,
-        broker: broker,
-        currentUser: currentUser,
+        user: currentUser ?? const AppUser(id: '', fullName: 'Guest', email: '', role: UserRole.user),
       ),
     ));
   }

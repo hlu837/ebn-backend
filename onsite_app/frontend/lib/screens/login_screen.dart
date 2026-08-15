@@ -9,10 +9,6 @@ import 'order_request_form_screen.dart';
 import 'role_router.dart';
 import 'role_select_screen.dart';
 import 'sell_property_form_screen.dart';
-import 'verification_pending_screen.dart';
-import '../models/user_role.dart';
-import '../models/role_upgrade_request.dart';
-import '../services/role_upgrade_service.dart';
 
 /// The standard, single login page — plain email + password, no role
 /// picker in sight. All the role logic happens after "Login" is pressed:
@@ -85,34 +81,8 @@ class _LoginScreenState extends State<LoginScreen> {
       }
 
       // 2. Smart router — the account's saved role decides the destination.
-      if (user.role == UserRole.user) {
-        try {
-          final requests = await RoleUpgradeService().myRequests(token: user.token ?? '');
-          RoleUpgradeRequest? pendingOrRejected;
-          for (final r in requests) {
-            if (r.status == RoleUpgradeStatus.pending || r.status == RoleUpgradeStatus.rejected) {
-              pendingOrRejected = r;
-              break;
-            }
-          }
-          if (pendingOrRejected != null && mounted) {
-            Navigator.of(context).pushAndRemoveUntil(
-              MaterialPageRoute(
-                builder: (_) => VerificationPendingScreen(
-                  user: user,
-                  targetRole: pendingOrRejected!.requestedRole,
-                  pendingRequest: pendingOrRejected,
-                ),
-              ),
-              (route) => false,
-            );
-            return;
-          }
-        } catch (_) {
-          // ignore network errors, fallback to standard routing
-        }
-      }
-
+      // Visitors always go to their home dashboard; upgrade verification is
+      // handled only when the user explicitly chooses a role upgrade flow.
       if (!mounted) return;
       Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(builder: (_) => dashboardForRole(user.role, user)),
@@ -135,61 +105,66 @@ class _LoginScreenState extends State<LoginScreen> {
       appBar: AppBar(),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(AppSpacing.lg, AppSpacing.sm, AppSpacing.lg, AppSpacing.xl),
+          padding: const EdgeInsets.fromLTRB(
+              AppSpacing.lg, AppSpacing.sm, AppSpacing.lg, AppSpacing.xl),
           child: Form(
             key: _formKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Welcome back', style: textTheme.displayLarge?.copyWith(fontSize: 28)),
+                Text('Welcome back',
+                    style: textTheme.displayLarge?.copyWith(fontSize: 28)),
                 const SizedBox(height: 6),
                 Text(
                   "We'll take you straight to your workspace.",
                   style: textTheme.bodyLarge?.copyWith(color: AppColors.slate),
                 ),
-
                 const SizedBox(height: AppSpacing.xl),
-
                 TextFormField(
                   controller: _emailCtrl,
                   keyboardType: TextInputType.emailAddress,
-                  decoration: const InputDecoration(labelText: 'Email', hintText: 'you@example.com'),
+                  decoration: const InputDecoration(
+                      labelText: 'Email', hintText: 'you@example.com'),
                   validator: Validators.email,
                 ),
                 const SizedBox(height: AppSpacing.md),
-
                 TextFormField(
                   controller: _passwordCtrl,
                   obscureText: _obscurePassword,
                   decoration: InputDecoration(
                     labelText: 'Password',
                     suffixIcon: IconButton(
-                      icon: Icon(_obscurePassword ? Icons.visibility_off_rounded : Icons.visibility_rounded),
-                      onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
+                      icon: Icon(_obscurePassword
+                          ? Icons.visibility_off_rounded
+                          : Icons.visibility_rounded),
+                      onPressed: () =>
+                          setState(() => _obscurePassword = !_obscurePassword),
                     ),
                   ),
                   validator: (v) => Validators.notEmpty(v, label: 'Password'),
                 ),
-
                 const SizedBox(height: AppSpacing.lg),
-
-                PrimaryButton(label: 'Log In', isLoading: _isLoading, onPressed: _submit),
-
+                PrimaryButton(
+                    label: 'Log In', isLoading: _isLoading, onPressed: _submit),
                 const SizedBox(height: AppSpacing.lg),
-
                 Center(
                   child: GestureDetector(
                     onTap: _isLoading
                         ? null
                         : () => Navigator.of(context).pushReplacement(
-                              MaterialPageRoute(builder: (_) => const RoleSelectScreen()),
+                              MaterialPageRoute(
+                                  builder: (_) => const RoleSelectScreen()),
                             ),
                     child: RichText(
                       text: TextSpan(
                         style: textTheme.bodyMedium,
                         children: const [
                           TextSpan(text: "Don't have an account?  "),
-                          TextSpan(text: 'Choose your path', style: TextStyle(color: AppColors.ink, fontWeight: FontWeight.w800)),
+                          TextSpan(
+                              text: 'Choose your path',
+                              style: TextStyle(
+                                  color: AppColors.ink,
+                                  fontWeight: FontWeight.w800)),
                         ],
                       ),
                     ),

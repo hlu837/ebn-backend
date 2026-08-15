@@ -180,8 +180,9 @@ class _AffiliateAccountSettingsScreenState extends State<AffiliateAccountSetting
                   padding: const EdgeInsets.all(AppSpacing.lg),
                   children: [
                     Center(
-                      child: Column(
-                        children: [
+child: Column(
+mainAxisSize: MainAxisSize.min,
+children: [
                           const CircleAvatar(
                             radius: 36,
                             backgroundColor: AppColors.border,

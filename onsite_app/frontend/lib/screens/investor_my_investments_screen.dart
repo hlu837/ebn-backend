@@ -82,6 +82,7 @@ class _InvestorMyInvestmentsScreenState extends State<InvestorMyInvestmentsScree
                             padding: EdgeInsets.symmetric(vertical: 80, horizontal: AppSpacing.lg),
                             child: Center(
                               child: Column(
+                                mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Icon(Icons.pie_chart_outline_rounded, size: 32, color: AppColors.slate),
                                   SizedBox(height: AppSpacing.sm),
@@ -120,6 +121,7 @@ class _ErrorState extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: 80, horizontal: AppSpacing.lg),
           child: Center(
             child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
                 const Icon(Icons.wifi_off_rounded, size: 32, color: AppColors.slate),
                 const SizedBox(height: AppSpacing.sm),
