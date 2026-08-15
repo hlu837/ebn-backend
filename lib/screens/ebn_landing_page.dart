@@ -808,7 +808,7 @@ class _EBNLandingPageState extends State<EBNLandingPage> {
           crossAxisCount: 2,
           mainAxisSpacing: 20,
           crossAxisSpacing: 16,
-          childAspectRatio: 0.55,
+          childAspectRatio: 0.48,
         ),
         itemBuilder: (context, index) {
           final ad = _ads[index];

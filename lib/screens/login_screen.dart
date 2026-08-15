@@ -9,10 +9,6 @@ import 'order_request_form_screen.dart';
 import 'role_router.dart';
 import 'role_select_screen.dart';
 import 'sell_property_form_screen.dart';
-import 'verification_pending_screen.dart';
-import '../models/user_role.dart';
-import '../models/role_upgrade_request.dart';
-import '../services/role_upgrade_service.dart';
 
 /// The standard, single login page — plain email + password, no role
 /// picker in sight. All the role logic happens after "Login" is pressed:

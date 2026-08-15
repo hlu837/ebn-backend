@@ -722,7 +722,7 @@ class _AgentHomeScreenState extends State<AgentHomeScreen> {
                 crossAxisCount: 2,
                 mainAxisSpacing: AppSpacing.sm,
                 crossAxisSpacing: AppSpacing.sm,
-                childAspectRatio: 0.72,
+                childAspectRatio: 0.60,
               ),
               delegate: SliverChildBuilderDelegate(
                 (context, index) {

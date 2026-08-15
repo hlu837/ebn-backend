@@ -269,7 +269,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                       crossAxisCount: 2,
                       mainAxisSpacing: AppSpacing.sm,
                       crossAxisSpacing: AppSpacing.sm,
-                      childAspectRatio: 0.72,
+                      childAspectRatio: 0.60,
                     ),
                     itemBuilder: (context, index) => AssetListCard(
                       asset: _assets[index],
