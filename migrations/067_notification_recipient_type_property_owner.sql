@@ -1,0 +1,11 @@
+-- `notifications.recipient_type` (023_notifications.sql) never got a
+-- 'property_owner' value when the role itself was added
+-- (064_property_owner_role.sql) — `GET /api/notifications` already
+-- passes `req.user.role` straight through as recipient_type
+-- (routes/notifications.js), so today that 500s for any Property Owner
+-- account the moment they open notifications, and
+-- propertyRequests.create's "notify the owner" step below silently fails
+-- the same way. Kept as its own migration, separate from any route code
+-- that uses the new value, per the note in
+-- 024_notification_kind_affiliate.sql.
+ALTER TYPE notification_recipient_type ADD VALUE IF NOT EXISTS 'property_owner';

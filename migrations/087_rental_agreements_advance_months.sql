@@ -1,0 +1,21 @@
+-- Closes the manual-rent-typing gap in sendAgreement: the owner used to
+-- type a free-hand "Rent (ETB)" amount, disconnected from the listing's
+-- own advertised monthly price (assets.price_amount) -- nothing stopped
+-- a typo, or a figure that just didn't match the listing, from quietly
+-- deciding what a tenant owed.
+--
+-- Now the owner only picks how many months of rent to collect up front
+-- as advance payment; the total due is computed server-side from the
+-- listing's own price at send time (see rentalAgreements.sendAgreement).
+-- rent_amount keeps storing the resulting total (advance_months x the
+-- listing's monthly price) -- same column, same meaning to every
+-- downstream reader (totalDue, payments, etc) -- advance_months is
+-- purely the new input that produces it.
+--
+-- Nullable: existing 'paid'/'rejected'/'expired' rows were sent before
+-- this concept existed and have no advance-months figure to backfill;
+-- their rent_amount stands as-is. New sends always set it (enforced in
+-- sendAgreement, not a DB constraint -- same convention the rest of
+-- this table already uses for its application-level checks).
+ALTER TABLE rental_agreements
+  ADD COLUMN IF NOT EXISTS advance_months INTEGER;
